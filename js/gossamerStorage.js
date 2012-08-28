@@ -948,11 +948,17 @@ function GossamerStorage(op) {
         },
 
         searchAll: function (deploymentId, schemaId, query, pageNumber, onSuccess, onError) {
-            var url = Gossamer.storage.urlFactory.article.getSearchAllUrl(deploymentId, schemaId, ['orderBy=__UtcLastUpdatedDate', 'pnum=' + pageNumber, 'freetext=' + query, 'psize=20']);
+			var that = this
+			var args = arguments
+			
+            var url = Gossamer.storage.urlFactory.article.getSearchAllUrl(deploymentId, schemaId, ['orderBy=__UtcLastUpdatedDate', 'pnum=' + pageNumber, 'freetext=' + query, 'pagesize=50']);
             Gossamer.utils.ajax.get(url, true, function (data) {
                 if (typeof (data.Articles) != "undefined" && data.Articles != null) {
                     if (typeof (onSuccess) == "function") {
                         onSuccess(data.Articles, data.PagingInfo.TotalRecords);
+                        if (pageNumber < Math.ceil(data.PagingInfo.TotalRecords / data.PagingInfo.PageSize)) {
+							Gossamer.storage.articles.searchAll(deploymentId, schemaId, query, pageNumber + 1, onSuccess, onError)
+						}
                     }
                 } else {
                     if (typeof (onError) == "function") {

@@ -6,6 +6,7 @@
         <link href="css/bootstrap.min.css" rel="stylesheet">
         <link href="css/custom.css" rel="stylesheet">
         <script src="js/jquery.js"></script>
+        <script src="js/cookies.js"></script>
         <script src="js/easing.js"></script>
         <script src="js/masonry.js"></script>
         <script src="js/mustache.js"></script>
@@ -22,6 +23,7 @@
         <script src="js/Raphael.js"></script>
         <script src="js/Raphael.path.methods.js"></script>
         <script src="js/simpleGraph.js"></script>
+        <script src="js/loader.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="css/bootstrap-responsive.css" rel="stylesheet">
         <title>Appacitive</title>
@@ -190,12 +192,17 @@
 				</div>
 			</div>
             <div class="container" style="margin-top:50px">
-                <div class="span12 invis" id="divUserBlocks">{{#users}}
-                    <div class="user-block usrblk" data-userid="{{userId}}" data-username="{{userName}}"
-                    style="text-align:center">{{#photograph}}
-                        <img src="{{photograph}}" width="128" height="128" style="width: 159px; height: 144px"
-                        />
-                        <br/>{{/photograph}}
+				<div class="span12" id="divUserBlocks"></div>
+                <div class="invis" id="divUserBlocksTemplate">{{#users}}
+                    <div class="user-block usrblk" data-userid="{{userId}}" data-username="{{userName}}" style="text-align:center">
+						{{#photograph}}
+							<img src="{{photograph}}" width="128" height="128" style="width: 159px; height: 144px" />
+							<br/>
+                        {{/photograph}}
+                        {{^photograph}}
+							<img src="img/empty-profile-male.png" width="128" height="128" style="width: 159px; height: 144px" />
+							<br/>
+                        {{/photograph}}
                         <div class="well user-block-label"><div class="user-loading-image">&nbsp;</div>{{userName}}</div>
                     </div>{{/users}}</div>
             </div>
@@ -337,106 +344,8 @@
             </div>
             <div class="book-bottom"></div>
         </div>
-        <div class="container-fluid invis" style="background-color: whitesmoke">
-            <br/>
-            <br/>
-            <br/>
-            <br/>
-            <div id="myModal" class="modal hide fade control-group" tabindex="-1"
-            role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">close</button>
-                    <h3 id="myModalLabel">Select a user</h3>
-                </div>
-                <div class="modal-body">
-                    <div class="">
-                        <p style="text-align:center">
-                            <input id="txtPName" style="width: 70%" type="text" class="" autocomplete="off"
-                            placeholder="Start typing...">
-                            <div class="progress hide progress-striped active" id='progressContainer1'>
-                                <div class="bar" id="progressBar1" style="width: 0%;"></div>
-                            </div>
-                        </p>
-                    </div>
-                    <div class="span4" id="divUserBlocks">{{#users}}
-                        <div class="user-block" data-userid="{{userId}}" style="text-align:center">{{#photograph}}
-                            <img src="{{photograph}}" width="64" height="64" />
-                            <br/>{{/photograph}} {{userName}}</div>{{/users}}</div>
-                </div>
-            </div>
-            <div id="detailsModal" class="modal hide fade control-group" tabindex="-1"
-            role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-                    <h3 id="myModalLabel">User Profile</h3>
-                </div>
-                <div class="modal-body" id="divPersonalDetails">
-                    <div class="row">
-                        <div class="span1">
-                            <img src="{{Photograph}}" class="img-polaroid" width="96" height="96"
-                            />
-                        </div>
-                        <div class="span4">{{Name}}, {{Age}} year old {{Gender}} {{Occupation}}
-                            <br/>{{Address}}
-                            <br/>{{#City}}{{City}}{{/City}}</div>
-                        <div style="clear:both">
-                            <br/>
-                        </div>
-                        <div class="span4">
-                            <i class="icon-envelope"></i>{{#Telephone_Number}}Telephone: {{Telephone_Number}}{{/Telephone_Number}}
-                            <br/>{{#Mobile_Number}}Mobile: {{Mobile_Number}}{{/Mobile_Number}}
-                            <br/>{{#Email_Id}}Email: {{Email_Id}}{{/Email_Id}}
-                            <br/>
-                        </div>
-                    </div>
-                    <hr/>
-                    <div class="row">
-                        <div class="span4">
-                            <i class="icon-bell"></i>
-                            <strong>Emergency contact</strong>
-                            <br/>{{Name_of_kin}}
-                            <br/>{{Address_of_kin}}
-                            <br/>Telephone: {{Mobile_Number_of_kin}}</div>
-                    </div>
-                    <hr/>
-                    <div class="row">
-                        <div class="span4">
-                            <i class="icon-list-alt"></i>
-                            <strong>Insurance</strong>
-                            <br/>Insurer: {{Insurer}}
-                            <br/>Insurance Type: {{Insurance_Type}}, Insurance Id: {{Insurance_Id}}
-                            <br/>Validity: {{Eff_Date}} to {{Term_Date}}</div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="span9 center-align">
-                    <button class="btn" onclick="toggleTimeline()">Toggle Stories</button>
-                </div>
-            </div>
-            <!-- Facebook style timeline -->
-            <div id="timelineContainer" class="invis">
-                <div class="timeline_container">
-                    <div class="timeline">
-                        <div class="plus"></div>
-                    </div>
-                </div>{{#timeline}}
-                <div class="timeline-item">
-                    <div class="timeline-item-heading">
-                        <span class="pull-left">{{displayDate}}
-                            <strong>{{displayHeader}}</strong>
-                        </span>
-                        <span>
-                            <a href="javascript:void(0)" class="collapsible"><i class="icon-minus pull-right"></i></a>
-                        </span>
-                    </div>
-                    <div class="timeline-item-content">
-                        <small>{{Note}}</small>
-                        <br/>{{#image}}
-                        <a href="javascript:void(0)"><img src="{{image}}" class="img-polaroid" height="140" width="280" /></a>{{/image}}</div>
-                </div>{{/timeline}}</div>
-        </div>
     </body>
     <script src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js"></script>
-
+	<script src="http://jquery-ui.googlecode.com/svn/tags/latest/ui/jquery.effects.core.js"></script>
+	<script src="http://jquery-ui.googlecode.com/svn/tags/latest/ui/jquery.effects.slide.js"></script>
 </html>

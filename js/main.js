@@ -16,7 +16,7 @@ var refreshUser = function() {
 			displayUser.apply(this, [])
 			if (window.activeTab) {
 				setTimeout(function() {
-					$('#btn' + activeTab).click()
+					$('#btn' + window.activeTab).click()
 				}, 10)
 			}
 		})
@@ -43,6 +43,8 @@ var displayUser = function(id, loader) {
 	
 	goto2()
 	
+	window.activeTab = 'Dashboard'
+	
 	setTimeout(showTimeline, 500)
 	
 	window.tabTimeline = function(){
@@ -58,11 +60,14 @@ var displayUser = function(id, loader) {
 			.removeClass('book-timeline-button-inactive')
 			.addClass('book-timeline-button-active')
 		
-		window.activeTab = 'Timeline'
 		
-		$('#divTimeline').slideDown('slow')
 		$('#divDetails').hide()
 		$('#divDashboard').hide()
+		
+		$('#div' + window.activeTab).show().hide('slide', {direction: 'left'}, 400);
+		setTimeout(function() { $('#divTimeline').show('slide', {direction: 'right'}, 400); }, 100)
+		
+		window.activeTab = 'Timeline'
 		
 		$('#lblTimeline').show()
 		$('#lblDashboard').hide()
@@ -92,15 +97,17 @@ var displayUser = function(id, loader) {
 			.removeClass('book-details-button-inactive')
 			.addClass('book-details-button-active')
 		
-		window.activeTab = 'Details'
-		
-		$('#divDetails').slideDown('slow')
 		$('#divTimeline').hide()
 		$('#divDashboard').hide()
+		$('#div' + window.activeTab).show().hide('slide', {direction: 'left'}, 400);
+		setTimeout(function() {
+			$('#divDetails').show('slide', {direction: 'right'}, 400);
+		}, 100)
+		window.activeTab = 'Details'
 		
-		$('#lblDetails').show()
-		$('#lblTimeline').hide()
-		$('#lblDashboard').hide()
+		//$('#lblDetails').show()
+		//$('#lblTimeline').hide()
+		//$('#lblDashboard').hide()
 		
 	}
 	$('#btnDetails').click(tabDetails)
@@ -117,12 +124,12 @@ var displayUser = function(id, loader) {
 		$(this)
 			.removeClass('book-dashboard-button-inactive')
 			.addClass('book-dashboard-button-active')
-			
-		window.activeTab = $(this)
-			
+		
 		$('#divDetails').hide()
-		$('#divTimeline').hide()
-		$('#divDashboard').slideDown('slow')
+		$('#divTimeline').hide()	
+		$('#div' + window.activeTab).show().hide('slide', {direction: 'left'}, 400);
+		setTimeout(function() { $('#divDashboard').show('slide', {direction: 'right'}, 400); }, 100)
+		window.activeTab = 'Dashboard'
 		
 		$('#lblDetails').hide()
 		$('#lblTimeline').hide()
@@ -311,7 +318,7 @@ $(function () {
 			return user
 		})
 		
-		$('#divUserBlocks').html(Mustache.render($('#divUserBlocks').html(), {users: users})).show()
+		$('#divUserBlocks').append($(Mustache.render($('#divUserBlocksTemplate').html(), {users: users})))
 		
 		$('#divUserBlocks > div.usrblk').click(function() {
 			
@@ -496,10 +503,21 @@ var searchPatient = function (e) {
     var pName = $('#txtPName').val().toLowerCase();
     
     if (pName.trim().length == 0) {
-		$('#divUserBlocks > div.user-block').fadeIn()
+		$('#divUserBlocks > div.user-block').show()
 		return
 	}
 		
+	var asyncHide = function(element) {
+		setTimeout(function() {
+			element.hide()
+		}, 0)
+	}
+	
+	var asyncShow = function(element) {
+		setTimeout(function() {
+			element.show()
+		}, 0)
+	}
     
     $('#divUserBlocks > div.usrblk').each(function() {
 		
@@ -507,8 +525,8 @@ var searchPatient = function (e) {
 		var userId = $(this).data().userid
 		if (!userName) debugger
 		if (userName.toLowerCase().indexOf(pName) != -1)
-			$(this).fadeIn();
-		else $(this).fadeOut();
+			asyncShow($(this));
+		else asyncHide($(this));
 	})
 	
 	return
