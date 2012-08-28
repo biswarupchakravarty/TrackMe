@@ -70,9 +70,8 @@ Gossamer.models.User = function(id, onLoaded) {
 		base.Age = new Date().getYear() - new Date(base.DOB).getYear()
 		base.Gender = base.Gender.toLowerCase()
 		
-		base.Photograph += '?session=' + Gossamer.authentication.getSessionId()
-		
-		console.dir(base)
+		if (base.Photograph)
+			base.Photograph += '?session=' + Gossamer.authentication.getSessionId()
 		
 		// sort the Statistics
 		base.Statistics.sort(function(a, b) {
@@ -122,49 +121,6 @@ Gossamer.models.User = function(id, onLoaded) {
 		// queryUserGraph();
 		load();
 	}
-	
-	base.getAllNames = function(query, callback) {
-	
-		// clear in-memory map of things
-		window.autoSuggest = {}
-		
-		Gossamer.storage.articles.searchAll(deploymentId, 'User', query, 1, function(articles) {
-			// parse the names
-			var names = []
-			if (articles.length == 0) {
-				callback([])
-				return
-			}
-			
-			// map
-			var names = articles.map(function(article) {
-			
-				// extract the user name
-				var name = null
-				var id = null
-				for (var x=0;x<article.__Properties.length;x=x+1) {
-					if (article.__Properties[x].Key.toLowerCase() == 'name') {
-						name = article.__Properties[x].Value
-						id = article.__Id
-					}
-				}
-				
-				if (name) {
-					// populate in-memory map
-					window.autoSuggest[name.replace(/ /gi, '').toLowerCase()] = id
-					
-					return name
-				}
-			
-			})
-			
-			callback(names)
-			
-		}, function() {
-			callback([])
-		})
-	}
-	
 	
 	return base;
 }

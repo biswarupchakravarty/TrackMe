@@ -105,9 +105,9 @@ var displayUser = function(id, loader) {
 		}, 100)
 		window.activeTab = 'Details'
 		
-		//$('#lblDetails').show()
-		//$('#lblTimeline').hide()
-		//$('#lblDashboard').hide()
+		$('#lblDetails').show()
+		$('#lblTimeline').hide()
+		$('#lblDashboard').hide()
 		
 	}
 	$('#btnDetails').click(tabDetails)
@@ -136,6 +136,17 @@ var displayUser = function(id, loader) {
 		$('#lblDashboard').show()
 	}
 	$('#btnDashboard').click(tabDashboard)
+	
+	$('a.deleteTimelineItem').live('click', function() {
+		var that = $(this)
+		that.parent().parent().parent().fadeOut('slow', function() {
+			that.remove()
+			$('#timelineContainer').masonry({
+				itemSelector: '.timeline-item',
+				isAnimated: true
+			});
+		})
+	})
 	
 	var d = new Date()
 	$('#txtStatsDate').val(d.getUTCFullYear() + '-' + (d.getMonth() > 9 ? d.getMonth() : '0' + d.getMonth()) + '-' + d.getDate())
@@ -312,7 +323,7 @@ $(function () {
 			
 			var user = {userName: userName, userId: article.__Id}
 			
-			if (photos.length > 0) 
+			if (photos.length > 0 && photos[0].Value && photos[0].Value.trim().length > 0) 
 				user.photograph = photos[0].Value + '?session=' + Gossamer.authentication.getSessionId()
 			
 			return user
@@ -323,6 +334,7 @@ $(function () {
 		$('#divUserBlocks > div.usrblk').click(function() {
 			
 			var loader = $('div.user-loading-image', $(this)).css('display','inline-block');
+			
 			var id = $(this).data().userid
 			
 			window.userId = id
@@ -523,7 +535,7 @@ var searchPatient = function (e) {
 		
 		var userName = $(this).data().username
 		var userId = $(this).data().userid
-		if (!userName) debugger
+		
 		if (userName.toLowerCase().indexOf(pName) != -1)
 			asyncShow($(this));
 		else asyncHide($(this));
