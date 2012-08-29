@@ -31,8 +31,8 @@
     </head>
     
     <body>
-        <div class="page-header-search-fixed invis insetType">
-            <a href="javascript:void(0)" onclick="goto1()">Back</a>
+        <div class="page-header-search-fixed invis insetType" onclick="goto1()">
+            <a href="javascript:void(0)" onclick="goto1()"></a>
         </div>
         <div id="divSection1">
             <div class="page-header-top">
@@ -212,141 +212,148 @@
             <!-- Placeholder for the actual templated content. -->
         </div>
         <div class="invis" id="divSection2Template">
-            <div class="book-top">
-                <div class="book-timeline-button-inactive" id="btnTimeline">
-                    <span class="book-active-button-text invis" id="lblTimeline">Timeline</span>
-                </div>
-                <div class="book-dashboard-button-active" id="btnDashboard">
-                    <span class="book-active-button-text" id="lblDashboard">Dashboard</span>
-                </div>
-                <div class="book-details-button-inactive" id="btnDetails">
-                    <span class="book-active-button-text invis" id="lblDetails">Details</span>
-                </div>
-                <div class="book-heading-row">
-                    <div style="display:inline-block">
-                        <img src="{{#Photograph}}{{Photograph}}{{/Photograph}}{{^Photograph}}img/empty-profile-male.png{{/Photograph}}" width="64" />
-                    </div>
-                    <div style="margin-left: 10px; display:inline-block; vertical-align: bottom;">
-                        <span style="font-weight: bold; font-size: 18pt;">{{Name}}</span>
-                        <span style="margin-left: 10px; color: gray; font-size: 12pt;">{{Age}} years old</span>
-                    </div>
-                </div>
+			<div class="page-header-top">
+                <span>Appacitive &beta;</span>
             </div>
-            <div class="book-middle">
-                <div id="divDetails" class="invis" style="margin-left: 145px; padding-top: 20px;">
-                    <div class="">{{Name}}, {{Age}} year old {{Gender}} {{Occupation}}
-                        <br/>{{Address}}
-                        <br/>{{#City}}{{City}}{{/City}}</div>
-                    <br/>
-                    <hr/>
-                    <div class="">
-                        <i class="icon-envelope"></i>{{#Telephone_Number}}Telephone: {{Telephone_Number}}{{/Telephone_Number}}
-                        <br/>{{#Mobile_Number}}Mobile: {{Mobile_Number}}{{/Mobile_Number}}
-                        <br/>{{#Email_Id}}Email: {{Email_Id}}{{/Email_Id}}
-                        <br/>
-                    </div>
-                    <hr/>
-                    <div class="">
-                        <i class="icon-bell"></i>
-                        <strong>Emergency contact</strong>
-                        <br/>{{Name_of_kin}}
-                        <br/>{{Address_of_kin}}
-                        <br/>Telephone: {{Mobile_Number_of_kin}}</div>
-                    <hr/>
-                    <div class="">
-                        <i class="icon-list-alt"></i>
-                        <strong>Insurance</strong>
-                        <br/>Insurer: {{Insurer}}
-                        <br/>Insurance Type: {{Insurance_Type}}, Insurance Id: {{Insurance_Id}}
-                        <br/>Validity: {{Eff_Date}} to {{Term_Date}}</div>
-                </div>
-                <div id="divTimeline" style="margin-left: 145px; padding-top: 20px;" class="invis">
-                    <h4>Patient Medical Timeline</h4>
-					<a href="#addEventModal" role="button" class="btn" data-toggle="modal">Add Event To Timeline</a>
-					<div id="addEventModal" class="modal hide fade control-group" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                        <div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-							<h3 id="myModalLabel">Add Timeline Event</h3>
+			<div class="book">
+				<div class="book-top">
+					<div class="book-timeline-button-inactive" id="btnTimeline">
+						<span class="book-active-button-text invis" id="lblTimeline">Timeline</span>
+					</div>
+					<div class="book-dashboard-button-active" id="btnDashboard">
+						<span class="book-active-button-text" id="lblDashboard">Dashboard</span>
+					</div>
+					<div class="book-details-button-inactive" id="btnDetails">
+						<span class="book-active-button-text invis" id="lblDetails">Details</span>
+					</div>
+					<div class="book-heading-row">
+						<div style="display:inline-block">
+							<img src="{{#Photograph}}{{Photograph}}{{/Photograph}}{{^Photograph}}img/empty-profile-male.png{{/Photograph}}" width="64" />
 						</div>
-						<div class="modal-body">
-							<select id="slctEventType">
-								<option value="Hospital">Hospital</option>
-								<option value="Doctor">Doctor</option>
-								<option value="Injury">Injury</option>
-								<option value="Disease">Disease</option>
-								<option value="Immunization">Immunization</option>
-								<option value="Surgery">Surgery</option>
-								<option value="Medical_Procedure">Medical_Procedure</option>
-							</select>
-							<input type="file" placeholder="Value" id="fileEventReport" />
+						<div style="margin-left: 10px; display:inline-block; vertical-align: bottom;">
+							<span style="font-weight: bold; font-size: 18pt;">{{Name}}</span>
+							<span style="margin-left: 10px; color: gray; font-size: 12pt;">{{Age}} years old</span>
+						</div>
+					</div>
+				</div>
+				<div class="book-middle">
+					<div id="divDetails" class="invis" style="margin-left: 145px; padding-top: 20px;">
+						<div class="">{{Name}}, {{Age}} year old {{Gender}} {{Occupation}}
+							<br/>{{Address}}
+							<br/>{{#City}}{{City}}{{/City}}</div>
+						<br/>
+						<hr/>
+						<div class="">
+							<i class="icon-envelope"></i>{{#Telephone_Number}}Telephone: {{Telephone_Number}}{{/Telephone_Number}}
+							<br/>{{#Mobile_Number}}Mobile: {{Mobile_Number}}{{/Mobile_Number}}
+							<br/>{{#Email_Id}}Email: {{Email_Id}}{{/Email_Id}}
 							<br/>
-							<input type="text" placeholder="Event Date" id="txtEventDate" placeholder="yyyy-mm-dd" />
-							<input type="text" placeholder="Event Time" id="txtEventTime" />
-							<br/>
-							<textarea type="text" placeholder="Notes" rows="4" cols="15" id="txtEventNotes"></textarea>
 						</div>
-                        <div class="modal-footer">
-							<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-							<button type="button" class="btn btn-primary" id="btnEventSave" data-loading-text="Saving...">Save Data</button>
+						<hr/>
+						<div class="">
+							<i class="icon-bell"></i>
+							<strong>Emergency contact</strong>
+							<br/>{{Name_of_kin}}
+							<br/>{{Address_of_kin}}
+							<br/>Telephone: {{Mobile_Number_of_kin}}</div>
+						<hr/>
+						<div class="">
+							<i class="icon-list-alt"></i>
+							<strong>Insurance</strong>
+							<br/>Insurer: {{Insurer}}
+							<br/>Insurance Type: {{Insurance_Type}}, Insurance Id: {{Insurance_Id}}
+							<br/>Validity: {{Eff_Date}} to {{Term_Date}}</div>
+					</div>
+					<div id="divTimeline" style="margin-left: 145px; padding-top: 20px;" class="invis">
+						<h4>Patient Medical Timeline</h4>
+						<a href="#addEventModal" role="button" class="btn" data-toggle="modal">Add Event To Timeline</a>
+						<div id="addEventModal" class="modal hide fade control-group" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+								<h3 id="myModalLabel">Add Timeline Event</h3>
+							</div>
+							<div class="modal-body">
+								<select id="slctEventType">
+									<option value="Hospital">Hospital</option>
+									<option value="Doctor">Doctor</option>
+									<option value="Injury">Injury</option>
+									<option value="Disease">Disease</option>
+									<option value="Immunization">Immunization</option>
+									<option value="Surgery">Surgery</option>
+									<option value="Medical_Procedure">Medical_Procedure</option>
+								</select>
+								<input type="file" placeholder="Value" id="fileEventReport" />
+								<br/>
+								<input type="text" placeholder="Event Date" id="txtEventDate" placeholder="yyyy-mm-dd" />
+								<input type="text" placeholder="Event Time" id="txtEventTime" />
+								<br/>
+								<textarea type="text" placeholder="Notes" rows="4" cols="15" id="txtEventNotes"></textarea>
+							</div>
+							<div class="modal-footer">
+								<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+								<button type="button" class="btn btn-primary" id="btnEventSave" data-loading-text="Saving...">Save Data</button>
+							</div>
 						</div>
-                    </div>
-                    <div id="timelineContainer">
-                        <div class="timeline_container">
-                        </div>{{#timeline}}
-                        <div class="timeline-item">
-                            <div class="timeline-item-heading collapsible">
-                                <span class="pull-left" style="width:90%; text-align: left">{{displayDate}}
-                                    <strong>{{displayHeader}}</strong>
-                                </span>
-                                <span class="invis">
-                                    <a href="javascript:void(0)" class="collapsible"><i class="icon-minus pull-right"></i></a>
-                                </span>
-                                <span>
-									<a href="javascript:void(0)" class="pull-right deleteTimelineItem event-delete"><i class="invis icon-remove-circle pull-right"></i></a>
-                                </span>
-                            </div>
-                            <div class="timeline-item-content">
-                                <small>{{Note}}</small>
-                                <br/>{{#image}}
-                                <a target="_blank" href="{{image}}"><img src="{{image}}" class="img-polaroid" height="140" width="280" /></a>{{/image}}</div>
-                        </div>{{/timeline}}</div>
-                </div>
-                <div id="divDashboard" style="margin-left: 145px; padding-top: 20px;">
-                    <a href="#addStatModal" role="button" class="btn" data-toggle="modal">Add Statistic</a>
-                    <!--<div class="cool-box span4 invis">-->
-                    <div id="addStatModal" class="modal hide fade control-group" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                        <div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-							<h3 id="myModalLabel">Add Statistic</h3>
+						<div id="timelineContainer">
+							<div class="timeline_container">
+							</div>{{#timeline}}
+							<div class="timeline-item">
+								<div class="timeline-item-heading collapsible">
+									<span class="pull-left" style="width:90%; text-align: left">{{displayDate}}
+										<strong>{{displayHeader}}</strong>
+									</span>
+									<span class="invis">
+										<a href="javascript:void(0)" class="collapsible"><i class="icon-minus pull-right"></i></a>
+									</span>
+									<span>
+										<a href="javascript:void(0)" class="pull-right deleteTimelineItem event-delete"><i class="invis icon-remove-circle pull-right"></i></a>
+									</span>
+								</div>
+								<div class="timeline-item-content">
+									<small>{{Note}}</small>
+									<br/>{{#image}}
+									<a target="_blank" href="{{image}}"><img src="{{image}}" class="img-polaroid" height="140" width="280" /></a>{{/image}}</div>
+							</div>{{/timeline}}</div>
+					</div>
+					<div id="divDashboard" style="margin-left: 145px; padding-top: 20px;">
+						<a href="#addStatModal" role="button" class="btn" data-toggle="modal">Add Statistic</a>
+						<!--<div class="cool-box span4 invis">-->
+						<div id="addStatModal" class="modal hide fade control-group" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+								<h3 id="myModalLabel">Add Statistic</h3>
+							</div>
+							<div class="modal-body">
+								<select id="slctStatsType">
+									<option value="Blood_Sugar">Blood Sugar</option>
+									<option value="Blood_Pressure">Blood Pressure</option>
+									<option value="Heart_Rate">Heart Rate</option>
+									<option value="Weight">Weight</option>
+								</select>
+								<input type="text" placeholder="Value" id="txtStatsValue" />
+								<br/>
+								<input type="text" placeholder="Date" id="txtStatsDate" placeholder="yyyy-mm-dd" />
+								<input type="text" placeholder="Time" id="txtStatsTime" />
+								<br/>
+								<textarea type="text" placeholder="Notes" rows="4" cols="15" id="txtStatsNotes"></textarea>
+							</div>
+							<div class="modal-footer">
+								<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+								<button type="button" class="btn btn-primary" id="btnStatsSave" data-loading-text="Saving...">Save Data</button>
+							</div>
 						</div>
-						<div class="modal-body">
-							<select id="slctStatsType">
-								<option value="Blood_Sugar">Blood Sugar</option>
-								<option value="Blood_Pressure">Blood Pressure</option>
-								<option value="Heart_Rate">Heart Rate</option>
-								<option value="Weight">Weight</option>
-							</select>
-							<input type="text" placeholder="Value" id="txtStatsValue" />
-							<br/>
-							<input type="text" placeholder="Date" id="txtStatsDate" placeholder="yyyy-mm-dd" />
-							<input type="text" placeholder="Time" id="txtStatsTime" />
-							<br/>
-							<textarea type="text" placeholder="Notes" rows="4" cols="15" id="txtStatsNotes"></textarea>
-						</div>
-                        <div class="modal-footer">
-							<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-							<button type="button" class="btn btn-primary" id="btnStatsSave" data-loading-text="Saving...">Save Data</button>
-						</div>
-                    </div>
-                    <div style="clear:both"></div>
-                    <div id="divHeartRateGraph" class=""></div>
-                    <div id="divBloodSugarGraph" class=""></div>
-                </div>
+						<div style="clear:both"></div>
+						<div id="divHeartRateGraph" class="chartholder"></div>
+						<div id="divBloodSugarGraph" class="chartholder"></div>
+					</div>
+				</div>
+				<div class="book-bottom"></div>
             </div>
-            <div class="book-bottom"></div>
         </div>
     </body>
     <script src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js"></script>
 	<script src="http://jquery-ui.googlecode.com/svn/tags/latest/ui/jquery.effects.core.js"></script>
 	<script src="http://jquery-ui.googlecode.com/svn/tags/latest/ui/jquery.effects.slide.js"></script>
+	<script src="js/highcharts.js"></script>
+	<script src="js/exporting.js"></script>
 </html>

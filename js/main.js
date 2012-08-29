@@ -163,13 +163,13 @@ var displayUser = function(id, loader) {
 			case 'weight':
 				if (stat.Value > wtMax) wtMax = stat.Value
 				if (stat.Value < wtMin) wtMin = stat.Value
-				wtValues.push(stat.Value)
+				wtValues.push(parseFloat(stat.Value))
 				wtDates.push(stat.Date)
 				break
 			case 'blood_sugar':
 				if (stat.Value > bsMax) bsMax = stat.Value
 				if (stat.Value < bsMin) bsMin = stat.Value
-				bsValues.push(stat.Value)
+				bsValues.push(parseFloat(stat.Value))
 				bsDates.push(stat.Date)
 				break
 			default:
@@ -179,28 +179,23 @@ var displayUser = function(id, loader) {
 	
 	if (wtValues.length > 0) {
 		if (wtValues.length > 6) wtValues = wtValues.slice(wtValues.length - 6, wtValues.length)
-		$("#divHeartRateGraph").simplegraph(wtValues, wtDates, {
-			fillUnderLine: false, 
-			units: "kg",
-			drawPoints: true,
-			minYAxisValue: parseInt(wtMax) + 2,
-			yAxisCaption: 'Patient Weight',
-			drawGrid: true,
-			lowerBound: parseInt(wtMin) - 2
-		});
+		var chart = new HighChart({
+			container: 'divHeartRateGraph',
+			data: {name: 'Heart Rate', data: wtValues},
+			categories: wtDates,
+			tooltipFormatter: function() {
+				console.dir(this)
+			}
+		})
 	}
 	
 	if (bsValues.length > 0) {
 		if (bsValues.length > 6) bsValues = bsValues.slice(bsValues.length - 6, bsValues.length)
-		$("#divBloodSugarGraph").simplegraph(bsValues, bsDates, {
-			fillUnderLine: false, 
-			units: "mg/dl",
-			drawPoints: true,
-			minYAxisValue: parseInt(bsMax) + 2,
-			yAxisCaption: 'Blood Sugar',
-			drawGrid: true,
-			lowerBound: parseInt(bsMin) - 2
-		});
+		var chart = new HighChart({
+			container: 'divBloodSugarGraph',
+			data: {name: 'Blood Sugar', data: bsValues},
+			categories: bsDates
+		})
 	}
 	
 	$('#btnStatsSave').click(function() {
@@ -475,41 +470,6 @@ var showTimeline = function() {
 	
 }
 
-var hideLogo = function () {
-    $('img[width=77]').hide();
-}
-
-var initGraphs = function () {
-	return;
-    var myChart = new JSChart('chartcontainer', 'line');
-    var myData = [
-        [0, 0]
-    ];
-    var lastValue = 0
-    for (var x = 1; x < 29; x = x + 1) {
-        var value = parseInt(Math.random() * 40) + 120;
-        myData.push(['8/' + x, value]);
-    }
-
-    myChart.setGraphExtend(true)
-    myChart.setDataArray(myData, 'sdf', true);
-    myData.forEach(function (value) {
-        if (value[1] > 150) myChart.setTooltip([value[0], 'Blood Sugar: ' + value[1] + ' md/dl']);
-    })
-    myChart.setTitle('Blood Sugar');
-    myChart.setTitleColor('#333');
-    myChart.resize(800, 300);
-    myChart.setGridColor('#333');
-    myChart.setLabelY([70, 'Low'])
-    myChart.setLabelY([150, 'High'])
-    myChart.setAxisValuesAngle(90);
-    myChart.setShowYValues(false)
-
-    myChart.draw();
-
-    setTimeout(hideLogo, 0);
-}
-
 var searchPatient = function (e) {
 	
     var pName = $('#txtPName').val().toLowerCase();
@@ -613,4 +573,55 @@ var generateTimeline = function(timeline) {
 				event.dump += '<b>' + x.replace(/_/g,' ') + '</b><br/>' + event[x] + '<br/><br/>'
 		}
 	})
+}
+
+
+var HighChart = function(options) {
+	var chart = new Highcharts.Chart({
+		chart: {
+			renderTo: options.container,
+			type: 'line',
+			marginRight: 130,
+			marginBottom: 25,
+			backgroundColor: 'transparent'
+		},
+		title: {
+			text: options.graphTitle || 'Graph',
+			x: -20 //center
+		},
+		subtitle: {
+			text: options.subTitle || '',
+			x: -20
+		},
+		xAxis: {
+			categories: options.categories || []
+		},
+		yAxis: {
+			title: {
+				text: options.yTitle || 'Y Axis'
+			},
+			plotLines: [{
+				value: 0,
+				width: 1,
+				color: '#808080'
+			}]
+		},
+		tooltip: {
+			formatter: options.tooltipFormatter|| (function() {
+                        return '<b>'+ this.series.name +'</b><br/>'+
+                        this.x +': '+ this.y +'°C';
+                })
+		},
+		legend: {
+			layout: 'vertical',
+			align: 'right',
+			verticalAlign: 'top',
+			x: -10,
+			y: 100,
+			borderWidth: 0
+		},
+		series: [options.data]
+	});
+	
+	return chart;
 }
