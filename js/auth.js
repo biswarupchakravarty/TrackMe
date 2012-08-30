@@ -21,7 +21,7 @@ Gossamer.authentication = new (function() {
 		
 		this.apikey = apikey
 		
-		if ($.cookie('sessionkey')) {
+		if ($.cookie('sessionkey') && false) {
 			sessionId = $.cookie('sessionkey')
 			return
 		}
