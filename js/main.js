@@ -2,6 +2,7 @@ var goto2 = function() {
 	$('#divSection1').slideUp()
 	$('div.page-header-search-fixed').slideDown()
 	$('#divSection2').slideDown('slow')
+	$('div.header-tab-dashboard').css('background','url("img/tab_dashboard.png") no-repeat')
 }
 
 var goto1 = function() {
@@ -223,9 +224,9 @@ var displayUser = function(id) {
 		var chart = new HighChart({
 			container: 'divHeartRateGraph',
 			data: {
-				name: 'Weight', 
+				name: 'Weight',
 				data: wtValues,
-				pointInterval: 3600 * 1000,
+				pointInterval: 3600 * 1000 * 2400,
 				pointStart: Date.UTC(wtStart.getFullYear(), wtStart.getMonth(), wtStart.getDate()),
 			},
 			categories: wtDates,
@@ -299,7 +300,13 @@ var displayUser = function(id) {
 					"Value": $('#txtStatsNotes').val()
 				}
 			],
-			"__SchemaType": "Statistics"
+			"__SchemaType": "Statistics",
+			"__Attributes": [
+				{
+					"Key": "userId",
+					"Value": window.userId
+				}
+			]
 		}
 		
 		Gossamer.storage.articles.create(deploymentId, 'Statistics', article, function(article) {

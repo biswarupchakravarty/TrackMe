@@ -30,7 +30,13 @@ var StatGenerator = function(userId, opt) {
 					"Value": new Date().format('yyyy-mm-dd')
 				}
 			],
-			"__SchemaType": "Statistics"
+			"__SchemaType": "Statistics",
+			"__Attributes": [
+				{
+					"Key": "userId",
+					"Value": window.userId
+				}
+			]
 		}
 		
 		Gossamer.storage.articles.create(deploymentId, 'Statistics', article, function(article) {
@@ -40,7 +46,7 @@ var StatGenerator = function(userId, opt) {
 				"__CreatedBy": "Strento",
 				"__LabelA": "User",
 				"__LabelB": "Statistics",
-				"__RelationName": "Statistics",
+				"__RelationName": "Statistics"
 			}
 			console.dir(article)
 			Gossamer.storage.connections.create(deploymentId, 'Statistics', connection, function(connection) {

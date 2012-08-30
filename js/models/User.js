@@ -9,6 +9,8 @@ Gossamer.models.User = function(id, onLoaded) {
 	
 	var base = {}
 	
+	var cache = {}
+	
 	var translate = function(article) {
 		if (!article.__Properties || article.__Properties.length == 0) return
 		for (var x=0;x < article.__Properties.length;x=x+1) {
@@ -21,7 +23,7 @@ Gossamer.models.User = function(id, onLoaded) {
 		}
 	}
 	
-	var load = function() {		
+	var load = function() {
 		var that = this
 		Gossamer.storage.articles.get(deploymentId, 'User', userId, function() {
 			translate.apply(base, [arguments[0]])
