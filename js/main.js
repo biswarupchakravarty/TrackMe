@@ -63,11 +63,7 @@ var displayUser = function(id, loader) {
 		
 		$('#divDetails').hide()
 		$('#divDashboard').hide()
-		
-		$('#div' + window.activeTab).show().hide('slide', {direction: 'left'}, 400);
-		setTimeout(function() { $('#divTimeline').show('slide', {direction: 'right'}, 400); }, 100)
-		
-		window.activeTab = 'Timeline'
+		$('#divTimeline').show()
 		
 		$('#lblTimeline').show()
 		$('#lblDashboard').hide()
@@ -80,6 +76,8 @@ var displayUser = function(id, loader) {
 			});
 			setTimeout(Arrows, 1000);
 		}, 500)
+		
+		window.activeTab = 'Timeline'
 		
 	}
 	$('#btnTimeline').click(tabTimeline)
@@ -99,16 +97,13 @@ var displayUser = function(id, loader) {
 		
 		$('#divTimeline').hide()
 		$('#divDashboard').hide()
-		$('#div' + window.activeTab).show().hide('slide', {direction: 'left'}, 400);
-		setTimeout(function() {
-			$('#divDetails').show('slide', {direction: 'right'}, 400);
-		}, 100)
-		window.activeTab = 'Details'
+		$('#divDashboard').show()
 		
 		$('#lblDetails').show()
 		$('#lblTimeline').hide()
 		$('#lblDashboard').hide()
 		
+		window.activeTab = 'Details'
 	}
 	$('#btnDetails').click(tabDetails)
 	
@@ -126,14 +121,14 @@ var displayUser = function(id, loader) {
 			.addClass('book-dashboard-button-active')
 		
 		$('#divDetails').hide()
-		$('#divTimeline').hide()	
-		$('#div' + window.activeTab).show().hide('slide', {direction: 'left'}, 400);
-		setTimeout(function() { $('#divDashboard').show('slide', {direction: 'right'}, 400); }, 100)
-		window.activeTab = 'Dashboard'
+		$('#divTimeline').hide()
+		$('#divDashboard').show()
 		
 		$('#lblDetails').hide()
 		$('#lblTimeline').hide()
 		$('#lblDashboard').show()
+		
+		window.activeTab = 'Dashboard'
 	}
 	$('#btnDashboard').click(tabDashboard)
 	
