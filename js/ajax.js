@@ -113,9 +113,8 @@ Depends on	jQuery
                 }
                 if (data.Code != undefined) {
                     if (data.Code == '8027' || data.Code == '8002' || window.sessionDown) {
-                        new Gossamer.views.sessionExpiredView().render(data, function () {
-                            EventManager.fire('logoutClicked', this);
-                        });
+                        Gossamer.authentication.removeCookie()
+                        Gossamer.authentication.getSession(Gossamer.authentication.getApiKey())
                         return false;
                     }
                 }

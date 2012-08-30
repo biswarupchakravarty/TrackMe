@@ -227,7 +227,7 @@
 						<span class="book-active-button-text invis" id="lblDetails">Details</span>
 					</div>
 					<div class="book-heading-row">
-						<div style="display:inline-block">
+						<div style="display:inline-block" class="photo-frame1">
 							<img src="{{#Photograph}}{{Photograph}}{{/Photograph}}{{^Photograph}}img/empty-profile-male.png{{/Photograph}}" width="64" />
 						</div>
 						<div style="margin-left: 10px; display:inline-block; vertical-align: bottom;">
@@ -345,15 +345,17 @@
 						<div style="clear:both"></div>
 						<div id="divHeartRateGraph" class="chartholder"></div>
 						<div id="divBloodSugarGraph" class="chartholder"></div>
+						<div id="divHeartBeatGraph" class="chartholder"></div>
 					</div>
 				</div>
 				<div class="book-bottom"></div>
             </div>
         </div>
     </body>
-    <script src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js"></script>
-	<script src="http://jquery-ui.googlecode.com/svn/tags/latest/ui/jquery.effects.core.js"></script>
-	<script src="http://jquery-ui.googlecode.com/svn/tags/latest/ui/jquery.effects.slide.js"></script>
+	<!--<script src="http://jquery-ui.googlecode.com/svn/tags/latest/ui/jquery.effects.core.js"></script>
+	<script src="http://jquery-ui.googlecode.com/svn/tags/latest/ui/jquery.effects.slide.js"></script>-->
 	<script src="js/highcharts.js"></script>
 	<script src="js/exporting.js"></script>
+	<script src="js/date.js"></script>
+	<script src="js/statLoader.js"></script>
 </html>

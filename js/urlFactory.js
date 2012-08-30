@@ -41,12 +41,11 @@ function UrlFactory() {
         getSearchAllUrl: function (deploymentId, schemaId, queryParams) {
             var url = '';
 
-            url = String.format('{0}/{1}/{2}/find/all', this.articleServiceUrl, deploymentId, schemaId);
+            url = String.format('{0}/{1}/{2}/find/all?', this.articleServiceUrl, deploymentId, schemaId);
 
-            url = url + '?psize=200';
             if (typeof (queryParams) !== 'undefined' && queryParams.length > 0) {
                 for (var i = 0; i < queryParams.length; i = i + 1) {
-                    url = url + "&" + queryParams[i];
+                    url = url + (i == 0 ? '' : '&') + queryParams[i];
                 }
             }
             return url;

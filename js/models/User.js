@@ -66,7 +66,7 @@ Gossamer.models.User = function(id, onLoaded) {
 		})
 		
 		
-		base.emailHash = CryptoJS.MD5(base.Email_Id);
+// 		base.emailHash = CryptoJS.MD5(base.Email_Id);
 		base.Age = new Date().getYear() - new Date(base.DOB).getYear()
 		base.Gender = base.Gender.toLowerCase()
 		
@@ -90,7 +90,7 @@ Gossamer.models.User = function(id, onLoaded) {
 			var result = (d2 - d1)
 			return result
 		})
-	
+		console.dir(base)
 		onLoaded.apply(base, [base])
 	}
 	

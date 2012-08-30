@@ -153,8 +153,11 @@ var displayUser = function(id, loader) {
 	$('#txtEventDate').val(d.getUTCFullYear() + '-' + (d.getMonth() > 9 ? d.getMonth() : '0' + d.getMonth()) + '-' + d.getDate())
 	var wtMax = -1, wtMin = 10000
 	var bsMax = -1, bsMin = 10000
-	var wtValues = [], wtDates = []
-	var bsValues = [], bsDates = []
+	var hbStart = new Date();
+	
+	var wtValues = [], wtDates = [], wtStart = new Date()
+	var bsValues = [], bsDates = [], bsStart = new Date()
+	var hbValues = [], hbDates = []
 	
 	this.Statistics.forEach(function(stat) {
 		if (!stat || !stat.Value || stat.Value.toString().trim().length == 0) return
@@ -165,12 +168,19 @@ var displayUser = function(id, loader) {
 				if (stat.Value < wtMin) wtMin = stat.Value
 				wtValues.push(parseFloat(stat.Value))
 				wtDates.push(stat.Date)
+				if (stat.Date < wtStart) wtStart = stat.Date;
 				break
 			case 'blood_sugar':
 				if (stat.Value > bsMax) bsMax = stat.Value
 				if (stat.Value < bsMin) bsMin = stat.Value
 				bsValues.push(parseFloat(stat.Value))
 				bsDates.push(stat.Date)
+				if (stat.Date < bsStart) bsStart = stat.Date;
+				break
+			case 'heart_rate':
+				hbValues.push(parseFloat(stat.Value));
+				hbDates.push(stat.Date);
+				if (new Date(stat.Date) < hbStart) hbStart = new Date(stat.Date);
 				break
 			default:
 				break
@@ -178,23 +188,52 @@ var displayUser = function(id, loader) {
 	});
 	
 	if (wtValues.length > 0) {
-		if (wtValues.length > 6) wtValues = wtValues.slice(wtValues.length - 6, wtValues.length)
+		// if (wtValues.length > 6) wtValues = wtValues.slice(wtValues.length - 6, wtValues.length)
 		var chart = new HighChart({
 			container: 'divHeartRateGraph',
-			data: {name: 'Heart Rate', data: wtValues},
+			data: {
+				name: 'Weight', 
+				data: wtValues,
+				pointInterval: 3600 * 1000,
+				pointStart: Date.UTC(wtStart.getFullYear(), wtStart.getMonth(), wtStart.getDate()),
+			},
 			categories: wtDates,
-			tooltipFormatter: function() {
-				console.dir(this)
-			}
+			yTitle: 'kilograms',
+			graphTitle: 'Weight'
 		})
 	}
 	
 	if (bsValues.length > 0) {
-		if (bsValues.length > 6) bsValues = bsValues.slice(bsValues.length - 6, bsValues.length)
+		// if (bsValues.length > 6) bsValues = bsValues.slice(bsValues.length - 6, bsValues.length)
 		var chart = new HighChart({
 			container: 'divBloodSugarGraph',
-			data: {name: 'Blood Sugar', data: bsValues},
-			categories: bsDates
+			data: {
+				name: 'Blood Sugar', 
+				data: bsValues,
+				pointInterval: 3600 * 1000,
+				pointStart: Date.UTC(bsStart.getFullYear(), bsStart.getMonth(), bsStart.getDate()),
+			},
+			categories: bsDates,
+			yTitle: 'mg per dl',
+			graphTitle: 'Blood Sugar'
+		})
+	}
+	
+	if (hbValues.length > 0) {
+		var chart = new HighChart({
+			container: 'divHeartBeatGraph',
+			data: {
+				name: 'Heart Beat', 
+				data: hbValues,
+				pointInterval: 3600 * 1000,
+                pointStart: Date.UTC(hbStart.getFullYear(), hbStart.getMonth(), hbStart.getDate()),
+                tooltipFormatter: function() {
+						return '<b>'+ this.series.name +'</b><br/>'+
+						'<b>' + this.y + '</b>';
+				}
+			},
+			yTitle: 'beats per minute',
+			graphTitle: 'Heart Rate'
 		})
 	}
 	
@@ -304,6 +343,16 @@ var displayUser = function(id, loader) {
 
 $(function () {
 	
+	$('#divUserBlocks > div.usrblk').live('click', function() {
+			
+		var loader = $('div.user-loading-image', $(this)).css('display','inline-block');
+		
+		var id = $(this).data().userid
+		
+		window.userId = id
+		var user = new Gossamer.models.User(id, displayUser)
+	})
+	
 	// populate the user list
 	Gossamer.storage.articles.searchAll(deploymentId, 'User', '', 1, function(articles) {
 		
@@ -326,15 +375,6 @@ $(function () {
 		
 		$('#divUserBlocks').append($(Mustache.render($('#divUserBlocksTemplate').html(), {users: users})))
 		
-		$('#divUserBlocks > div.usrblk').click(function() {
-			
-			var loader = $('div.user-loading-image', $(this)).css('display','inline-block');
-			
-			var id = $(this).data().userid
-			
-			window.userId = id
-			var user = new Gossamer.models.User(id, displayUser)
-		})
 		
 	}, function() {
 		// error handling here
@@ -388,13 +428,15 @@ $(function () {
 
 	$('#txtPName').focus();
     
-    
-    if (window.navigator.userAgent.toLowerCase().indexOf('ipad') == -1) {
-		$('div.container').waypoint(function(event, direction) {
-			$('.page-header-search').toggleClass('stuck-top');
-		})
-	}
 
+	if (false) {
+		if (window.navigator.userAgent.toLowerCase().indexOf('ipad') == -1) {
+			$('div.container').waypoint(function(event, direction) {
+				$('.page-header-search').toggleClass('stuck-top');
+			})
+		}
+	}
+	
     $('#timelineContainer').mousemove(function (e) {
         var topdiv = $("#containertop").height();
         var pag = e.pageY - 26;
@@ -577,10 +619,17 @@ var generateTimeline = function(timeline) {
 
 
 var HighChart = function(options) {
+	
+	options.tooltipFormatter = options.tooltipFormatter || function() {
+			return '<b>'+ this.series.name +'</b><br/>'+
+			'<b>' + this.x +'</b> : <b> ' + this.y + '</b>';
+	};
+	
 	var chart = new Highcharts.Chart({
 		chart: {
 			renderTo: options.container,
 			type: 'line',
+			zoomType: 'x',
 			marginRight: 130,
 			marginBottom: 25,
 			backgroundColor: 'transparent'
@@ -594,7 +643,8 @@ var HighChart = function(options) {
 			x: -20
 		},
 		xAxis: {
-			categories: options.categories || []
+			type: 'datetime',
+			title: { text: null }
 		},
 		yAxis: {
 			title: {
@@ -607,10 +657,7 @@ var HighChart = function(options) {
 			}]
 		},
 		tooltip: {
-			formatter: options.tooltipFormatter|| (function() {
-                        return '<b>'+ this.series.name +'</b><br/>'+
-                        this.x +': '+ this.y +'°C';
-                })
+			formatter: options.tooltipFormatter
 		},
 		legend: {
 			layout: 'vertical',

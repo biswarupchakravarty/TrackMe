@@ -7,8 +7,19 @@ Gossamer.authentication = new (function() {
 	this.getSessionId = function() {
 		return sessionId || null;
 	}
+	
+	this.clearSessionId = function() {
+		$.removeCookie('sessionkey')
+	}
+
+	var apikey;
+	this.getApiKey = function() {
+		return apikey;
+	}
 
 	this.getSession = function(apikey) {
+		
+		this.apikey = apikey
 		
 		if ($.cookie('sessionkey')) {
 			sessionId = $.cookie('sessionkey')
