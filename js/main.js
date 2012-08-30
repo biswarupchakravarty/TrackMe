@@ -97,7 +97,7 @@ var displayUser = function(id, loader) {
 		
 		$('#divTimeline').hide()
 		$('#divDashboard').hide()
-		$('#divDashboard').show()
+		$('#divDetails').show()
 		
 		$('#lblDetails').show()
 		$('#lblTimeline').hide()
