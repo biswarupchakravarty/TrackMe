@@ -40,7 +40,7 @@ body {
 	background: url('../img/search-bg.png') repeat-x;
 	top: 100px;
 	z-index: 100;
-	margin-top: -8px;
+	margin-top: -20px;
 	text-align: center;
 	border-left: 1px solid rgba(200,66,00,0.25);
 	border-right: 1px solid rgba(200,66,00,0.25);
@@ -68,6 +68,16 @@ body {
 	top: 30px;
 	left: 20px;
 	position: relative;
+}
+
+.logo {
+	background: url('../img/logo2.png') no-repeat;
+	width: 265px;
+	height: 60px;
+}
+
+li {
+	line-height: 35px;
 }
 
 #timelineContainer {
@@ -205,7 +215,7 @@ body {
 	cursor: pointer;
 	width: 140px;
 	height: 40px;
-	margin-top: 100px;
+	margin-top: 65px;
 }
 .stuck-top {
 	position: fixed;

@@ -179,7 +179,7 @@ var displayUser = function(id, loader) {
 				break
 			case 'heart_rate':
 				hbValues.push(parseFloat(stat.Value));
-				hbDates.push(stat.Date);
+				hbDates.push(new Date(stat.Date));
 				if (new Date(stat.Date) < hbStart) hbStart = new Date(stat.Date);
 				break
 			default:
@@ -208,7 +208,7 @@ var displayUser = function(id, loader) {
 		var chart = new HighChart({
 			container: 'divBloodSugarGraph',
 			data: {
-				name: 'Blood Sugar', 
+				name: 'Blood Sugar',
 				data: bsValues,
 				pointInterval: 3600 * 1000,
 				pointStart: Date.UTC(bsStart.getFullYear(), bsStart.getMonth(), bsStart.getDate()),
@@ -223,14 +223,10 @@ var displayUser = function(id, loader) {
 		var chart = new HighChart({
 			container: 'divHeartBeatGraph',
 			data: {
-				name: 'Heart Beat', 
+				type: 'area',
 				data: hbValues,
 				pointInterval: 3600 * 1000,
-                pointStart: Date.UTC(hbStart.getFullYear(), hbStart.getMonth(), hbStart.getDate()),
-                tooltipFormatter: function() {
-						return '<b>'+ this.series.name +'</b><br/>'+
-						'<b>' + this.y + '</b>';
-				}
+                pointStart: Date.UTC(hbStart.getFullYear(), hbStart.getMonth(), hbStart.getDate())
 			},
 			yTitle: 'beats per minute',
 			graphTitle: 'Heart Rate'
@@ -628,7 +624,6 @@ var HighChart = function(options) {
 	var chart = new Highcharts.Chart({
 		chart: {
 			renderTo: options.container,
-			type: 'line',
 			zoomType: 'x',
 			marginRight: 130,
 			marginBottom: 25,
@@ -644,7 +639,28 @@ var HighChart = function(options) {
 		},
 		xAxis: {
 			type: 'datetime',
+			maxZoom: 3600 * 1000 * 2,
 			title: { text: null }
+		},
+		plotOptions: {
+			area: {
+				lineWidth: 1,
+				marker: {
+					enabled: false,
+					states: {
+						hover: {
+							enabled: true,
+							radius: 5
+						}
+					}
+				},
+				shadow: false,
+				states: {
+					hover: {
+						lineWidth: 1
+					}
+				}
+			}
 		},
 		yAxis: {
 			title: {
@@ -654,10 +670,13 @@ var HighChart = function(options) {
 				value: 0,
 				width: 1,
 				color: '#808080'
-			}]
+			}],
+			min: 0.6,
+			startOnTick: false,
+			showFirstLabel: false
 		},
 		tooltip: {
-			formatter: options.tooltipFormatter
+			shared: true
 		},
 		legend: {
 			layout: 'vertical',

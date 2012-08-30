@@ -4,7 +4,7 @@ var StatGenerator = function(userId, opt) {
 		statType: 'Heart_Rate',
 		minValue: 80,
 		maxValue: 120,
-		interval: '2000'
+		interval: '0'
 	}
 	
 	options.userId = userId
