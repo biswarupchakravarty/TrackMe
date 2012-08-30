@@ -88,6 +88,15 @@ li {
 	line-height: 35px;
 }
 
+.flip-horizontal {
+    -moz-transform: scaleX(-1);
+    -webkit-transform: scaleX(-0.5);
+    -o-transform: scaleX(-1);
+    transform: scaleX(-1);
+    -ms-filter: fliph; /*IE*/
+    filter: fliph; /*IE*/
+}
+
 #timelineContainer {
     width: 688px;
 }
@@ -194,11 +203,13 @@ li {
 
 .user-block {
 	float: left;
-	width: 342px;
-	height: 398px;
+	width: 207px;
+	height: 267px;
 	border-radius: 4px;
 	margin: 10px;
-	background: url('../img/Folder-bg.png') no-repeat;
+	.margin-left: 20px;
+	.margin-right: 20px;
+	background: url('../img/img-folder-small.png') no-repeat;
 	position: relative;
 }
 
@@ -234,17 +245,19 @@ li {
 }
 
 .user-block-label {
-	background: rgba(119,82,30,0.1);
-	width: 220px;
-	margin-right: auto;
-	margin-left: 25px;
-	bottom: 30px;
+	width: 100%;
+	margin-left: -5px;
+	top: 185px;
 	position: absolute;
+	font-size: 10pt;
+	text-align: center;
 }
 
 .user-block img {
-	margin-top: 41px;
-	margin-left: -99px;
+	margin-top: 39px;
+	margin-left: -9px;
+	width: 106px !important;
+	height: 107px !important;
 }
 
 .user-block:hover {
@@ -257,8 +270,8 @@ hr {
 }
 
 .book-heading-row {
-	margin-left: 150px; 
-	margin-top: 90px;
+	margin-left: 140px;
+	bottom: 10px;
 	position: absolute;
 }
 
@@ -271,27 +284,24 @@ hr {
 
 .book-top {
 	top:0px;
-	background: url("../img/file-top.png") no-repeat;
-	height:185px;	
-	margin-left:40px;
-	width: 910px;
+	background: url("../img/bg-middle-top.png") no-repeat;
+	height:109px;
+	width: 960px;
 	position: relative;
 }
 
 .book-middle {
-	background-image: url("../img/Content-middle-bg.png");
+	background-image: url("../img/bg-middle-inner.png");
 	background-repeat: repeat-y;
-	margin-left: 40px;
 	min-height: 450px;
-	width: 910px;
+	width: 960px;
 }
 
 .book-bottom {
 	bottom:0px;
-	background: url("../img/File-bottom.png") no-repeat;
+	background: url("../img/bg-middle-footer.png") no-repeat;
 	height:100px;
-	margin-left:40px;
-	width: 910px;
+	width: 960px;
 }
 
 .book-timeline-button-active {
@@ -356,29 +366,31 @@ hr {
 	height:65px;
 }
 
-.cool-box {
-	position: relative;
-	margin: 15px 0;
-	padding: 39px 19px 14px;
-	background-color: white;
-	border: 1px solid #DDD;
-	-webkit-border-radius: 4px;
-	-moz-border-radius: 4px;
-	border-radius: 4px;
+.header-tab-dashboard {
+	background: url('../img/tab_dashboard.png') no-repeat;
+	height: 46px;
+	width: 960px;
 }
 
-.cool-box::after {
-	content: "Data Entry";
-	position: absolute;
-	top: -1px;
-	left: -1px;
-	padding: 3px 7px;
-	font-size: 12px;
-	font-weight: bold;
-	background-color: whiteSmoke;
-	border: 1px solid #DDD;
-	color: #9DA0A4;
-	-webkit-border-radius: 4px 0 4px 0;
-	-moz-border-radius: 4px 0 4px 0;
-	border-radius: 4px 0 4px 0;
+.goto-link {
+	display: inline-block;
+	height: 30px;
+	width: 140px;
+	margin-top: 5px;
+}
+
+.goto-link a {
+	text-decoration: none;
+}
+
+.goto-dashboard {
+	margin-left: 110px;
+}	
+	
+.goto-timeline {
+	margin-left: 20px;
+}
+
+.goto-details {
+	margin-left: 17px;
 }

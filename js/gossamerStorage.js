@@ -956,7 +956,7 @@ function GossamerStorage(op) {
                 if (typeof (data.Articles) != "undefined" && data.Articles != null) {
                     if (typeof (onSuccess) == "function") {
                         onSuccess(data.Articles, data.PagingInfo.TotalRecords);
-                        if (pageNumber * data.PagingInfo.PageSize >= 200) return;
+                        if (pageNumber * data.PagingInfo.PageSize >= 50) return;
                         if (pageNumber < Math.ceil(data.PagingInfo.TotalRecords / data.PagingInfo.PageSize)) {
 							Gossamer.storage.articles.searchAll(deploymentId, schemaId, query, pageNumber + 1, onSuccess, onError)
 						}

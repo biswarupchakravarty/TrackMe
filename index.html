@@ -215,10 +215,10 @@
 							<br/>
                         {{/photograph}}
                         {{^photograph}}
-							<img src="img/empty-profile-male.png" width="128" height="128" style="width: 159px; height: 144px" />
+							<img src="img/empty-profile-male.png" />
 							<br/>
                         {{/photograph}}
-                        <div class="well user-block-label"><div class="user-loading-image">&nbsp;</div>{{userName}}</div>
+                        <div class="user-block-label"><div class="user-loading-image">&nbsp;</div>{{userName}}</div>
                     </div>{{/users}}</div>
             </div>
         </div>
@@ -230,14 +230,19 @@
                 <span>Appacitive &beta;</span>
             </div>
 			<div class="book">
+				<div class="header-tab-dashboard">
+					<a class="goto-link goto-dashboard" href="javascript:void(0)">&nbsp;</a>
+					<a class="goto-link goto-timeline" href="javascript:void(0)">&nbsp;</a>
+					<a class="goto-link goto-details" href="javascript:void(0)">&nbsp;</a>
+				</div>
 				<div class="book-top">
-					<div class="book-timeline-button-inactive" id="btnTimeline">
+					<div class="book-timeline-button-inactive invis" id="btnTimeline">
 						<span class="book-active-button-text invis" id="lblTimeline">Timeline</span>
 					</div>
-					<div class="book-dashboard-button-active" id="btnDashboard">
+					<div class="book-dashboard-button-active invis" id="btnDashboard">
 						<span class="book-active-button-text" id="lblDashboard">Dashboard</span>
 					</div>
-					<div class="book-details-button-inactive" id="btnDetails">
+					<div class="book-details-button-inactive invis" id="btnDetails">
 						<span class="book-active-button-text invis" id="lblDetails">Details</span>
 					</div>
 					<div class="book-heading-row">
@@ -373,5 +378,5 @@
 	<script src="js/date.js"></script>
 	<script src="js/statLoader.js"></script>
 	<script src="js/slimScroll.js"></script>
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js"></script>
+	<!--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js"></script>-->
 </html>

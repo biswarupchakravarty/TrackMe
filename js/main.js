@@ -16,14 +16,14 @@ var refreshUser = function() {
 			displayUser.apply(this, [])
 			if (window.activeTab) {
 				setTimeout(function() {
-					$('#btn' + window.activeTab).click()
-				}, 10)
+					$('a.goto-' + window.activeTab).click()
+				}, 0)
 			}
 		})
 	}
 }
 
-var displayUser = function(id, loader) {
+var displayUser = function(id) {
 	
 	// create the timeline
 	generateTimeline(this.timeline)
@@ -131,6 +131,42 @@ var displayUser = function(id, loader) {
 		window.activeTab = 'Dashboard'
 	}
 	$('#btnDashboard').click(tabDashboard)
+	
+	$('a.goto-timeline').click(function() {
+		$('#divDetails').hide()
+		$('#divDashboard').hide()
+		$('#divTimeline').show()
+		
+		$('div.header-tab-dashboard').css('background','url("img/tab_timeline.png") no-repeat')
+		
+		setTimeout(function() {
+			$('#timelineContainer').masonry({
+				itemSelector: '.timeline-item',
+				isAnimated: true
+			});
+			setTimeout(Arrows, 1000);
+		}, 500)
+		
+		window.activeTab = 'timeline'
+	})
+	
+	$('a.goto-dashboard').click(function() {
+		$('#divDetails').hide()
+		$('#divDashboard').show()
+		$('#divTimeline').hide()
+		
+		$('div.header-tab-dashboard').css('background','url("img/tab_dashboard.png") no-repeat')
+		window.activeTab = 'dashboard'
+	})
+	
+	$('a.goto-details').click(function() {
+		$('#divDetails').show()
+		$('#divDashboard').hide()
+		$('#divTimeline').hide()
+		
+		$('div.header-tab-dashboard').css('background','url("img/tab_details.png") no-repeat')
+		window.activeTab = 'details'
+	})
 	
 	$('a.deleteTimelineItem').live('click', function() {
 		var that = $(this)
@@ -343,11 +379,10 @@ $(function () {
 	
 	$('#divUserBlocks > div.usrblk').live('click', function() {
 			
-		var loader = $('div.user-loading-image', $(this)).css('display','inline-block');
-		
 		var id = $(this).data().userid
 		
 		window.userId = id
+		
 		var user = new Gossamer.models.User(id, displayUser)
 	})
 	
