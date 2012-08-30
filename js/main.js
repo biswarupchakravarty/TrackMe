@@ -224,7 +224,14 @@ var displayUser = function(id, loader) {
                 pointStart: Date.UTC(hbStart.getFullYear(), hbStart.getMonth(), hbStart.getDate())
 			},
 			yTitle: 'beats per minute',
-			graphTitle: 'Heart Rate'
+			graphTitle: 'Heart Rate',
+			fillColor: {
+				linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1},
+				stops: [
+					[0, Highcharts.getOptions().colors[0]],
+					[1, 'rgba(2,0,0,0)']
+				]
+			}
 		})
 	}
 	
@@ -417,7 +424,7 @@ $(function () {
 
     window.location.hash = ''
 
-	$('#txtPName').focus();
+	//$('#txtPName').focus();
     
 
 	if (false) {
@@ -639,6 +646,7 @@ var HighChart = function(options) {
 		},
 		plotOptions: {
 			area: {
+				fillColor: options.fillColor || undefined,
 				lineWidth: 1,
 				marker: {
 					enabled: false,

@@ -71,9 +71,17 @@ body {
 }
 
 .logo {
-	background: url('../img/logo2.png') no-repeat;
-	width: 265px;
-	height: 60px;
+	background: #231F20 url('../img/logo.png') no-repeat;
+	.background: #231F20 url('../img/logo2.png') no-repeat;
+	width: 230px;
+	height: 53px;
+	float: left;;
+}
+
+.top-search {
+	.padding: 6px !important;
+	font-size: 12pt !important;
+	margin-top: 3px;
 }
 
 li {
