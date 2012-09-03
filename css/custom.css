@@ -394,3 +394,17 @@ hr {
 .goto-details {
 	margin-left: 17px;
 }
+
+.loading-overlay {
+	width: 100%;
+	position: fixed;
+	height: 100%;
+	top: 0px;
+	left: 0px;
+	z-index: 1000;
+	background-color: rgba(120, 120, 120, 0.75);
+	opacity: 0.8;
+	color: black;
+	text-align: center;
+	vertical-align: middle;
+}

@@ -378,7 +378,8 @@ var displayUser = function(id) {
 		})
 	})
 	
-	
+	clearInterval(window.preloaderHandle)
+	$('div.loading-overlay').fadeOut()
 }
 
 
@@ -389,6 +390,15 @@ $(function () {
 		var id = $(this).data().userid
 		
 		window.userId = id
+		
+		$('div.bar').css('width','0%');
+		$('div.loading-overlay').fadeIn();
+		
+		var width = 0;
+		window.preloaderHandle = setInterval(function() {
+			width = width + 2
+			$('div.bar').css('width',width + '%')
+		}, 150);
 		
 		var user = new Gossamer.models.User(id, displayUser)
 	})
