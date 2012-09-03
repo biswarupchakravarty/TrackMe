@@ -381,12 +381,16 @@ var displayUser = function(id) {
 	clearInterval(window.preloaderHandle)
 	$('div.loading-overlay').fadeOut()
 	$('div#divProgressBar').slideUp();
+	window.selectedFolder.css('z-index','1').css('transform','scale(1,1)')
+	window.loading = false
 }
 
 
 $(function () {
 	
-	$('#divUserBlocks > div.usrblk').live('click', function() {
+	$('#divUserBlocks > div.usrblk').live('mousedown', function() {
+		
+		if (window.loading) return;
 			
 		var id = $(this).data().userid
 		
@@ -394,19 +398,22 @@ $(function () {
 		
 		$('div.bar').css('width','100%');
 		$('div.loading-overlay').fadeIn();
-		$('div#divProgressBar').slideDown();
+		// $('div#divProgressBar').slideDown();
 		
-		var width = 0;
+		var currentScale = 1;
 		window.preloaderHandle = 0;
+		window.selectedFolder = $(this).css('z-index','1001')
 		
-		if (false) {
-			setInterval(function() {
-				width = width + 2
-				$('div.bar').css('width',width + '%')
-			}, 150);
-		}
+		setInterval(function() {
+			if (currentScale >= 1.1) return;
+			currentScale += 0.01
+			selectedFolder.css('transform','scale(' + currentScale + ',' + currentScale + ')')
+		}, 10);
 		
+		window.loading = true
 		var user = new Gossamer.models.User(id, displayUser)
+		
+		return false;
 	})
 	
 	// populate the user list
