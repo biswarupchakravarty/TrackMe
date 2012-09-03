@@ -392,15 +392,19 @@ $(function () {
 		
 		window.userId = id
 		
-		$('div.bar').css('width','0%');
+		$('div.bar').css('width','100%');
 		$('div.loading-overlay').fadeIn();
 		$('div#divProgressBar').slideDown();
 		
 		var width = 0;
-		window.preloaderHandle = setInterval(function() {
-			width = width + 2
-			$('div.bar').css('width',width + '%')
-		}, 150);
+		window.preloaderHandle = 0;
+		
+		if (false) {
+			setInterval(function() {
+				width = width + 2
+				$('div.bar').css('width',width + '%')
+			}, 150);
+		}
 		
 		var user = new Gossamer.models.User(id, displayUser)
 	})
@@ -549,7 +553,12 @@ var showTimeline = function() {
 	}, 500)
 	
 	if ($('div.timeline-item').length < 6) $('div.timeline').hide(); else $('div.timeline').show()
-	$('div.timeline').css('height', $('div.book-bottom').offset().top - 100)
+	$('div.timeline').css('left', $('div.timeline-item').offset().left + 21 + $('div.timeline-item').width())
+	
+	var height = $('div.book-middle').height - 200;
+	$('div.timeline').css('height',height);
+	
+	$('div.timeline').offset().top += $('div.timeline').offset().top
 	$('a.collapsible').click(function() {
 		$(this).parent().parent().next().toggle('fast', function() {
 			$('#timelineContainer').masonry({

@@ -152,7 +152,6 @@ li {
 }
 
 .timeline:hover {
-    cursor: crosshair;
     margin: 0 auto;
 }
 
