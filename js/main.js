@@ -380,6 +380,7 @@ var displayUser = function(id) {
 	
 	clearInterval(window.preloaderHandle)
 	$('div.loading-overlay').fadeOut()
+	$('div#divProgressBar').slideUp();
 }
 
 
@@ -393,6 +394,7 @@ $(function () {
 		
 		$('div.bar').css('width','0%');
 		$('div.loading-overlay').fadeIn();
+		$('div#divProgressBar').slideDown();
 		
 		var width = 0;
 		window.preloaderHandle = setInterval(function() {
