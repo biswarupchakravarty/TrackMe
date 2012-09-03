@@ -255,6 +255,7 @@ var displayUser = function(id) {
 		var chart = new HighChart({
 			container: 'divHeartBeatGraph',
 			data: {
+				name: 'Heart Beat',
 				type: 'area',
 				data: hbValues,
 				pointInterval: 3600 * 1000,
