@@ -951,12 +951,12 @@ function GossamerStorage(op) {
 			var that = this
 			var args = arguments
 			
-            var url = Gossamer.storage.urlFactory.article.getSearchAllUrl(deploymentId, schemaId, ['orderBy=__UtcDateCreated&isAsc=true', 'pnum=' + pageNumber, 'freetext=' + query, 'psize=20']);
+            var url = Gossamer.storage.urlFactory.article.getSearchAllUrl(deploymentId, schemaId, ['orderBy=__UtcDateCreated&isAsc=true', 'pnum=' + pageNumber, 'freetext=' + query, 'psize=10']);
             Gossamer.utils.ajax.get(url, true, function (data) {
                 if (typeof (data.Articles) != "undefined" && data.Articles != null) {
                     if (typeof (onSuccess) == "function") {
                         onSuccess(data.Articles, data.PagingInfo.TotalRecords);
-                        if (pageNumber * data.PagingInfo.PageSize >= 50) return;
+                        if (pageNumber * data.PagingInfo.PageSize >= 5000) return;
                         if (pageNumber < Math.ceil(data.PagingInfo.TotalRecords / data.PagingInfo.PageSize)) {
 							Gossamer.storage.articles.searchAll(deploymentId, schemaId, query, pageNumber + 1, onSuccess, onError)
 						}

@@ -308,7 +308,7 @@ var displayUser = function(id) {
 					"Value": window.userId
 				},
 				{
-					"Key": "sessionKey",
+					"Key": "sessionkey",
 					"Value": Gossamer.authentication.getSessionId()
 				}
 			]
@@ -388,6 +388,7 @@ var displayUser = function(id) {
 	$('div#divProgressBar').slideUp();
 	window.selectedFolder.css('z-index','1').css('transform','scale(1,1)')
 	window.loading = false
+	$('div.user-loader').hide()
 }
 
 
@@ -396,7 +397,9 @@ $(function () {
 	$('#divUserBlocks > div.usrblk').live('mousedown', function() {
 		
 		if (window.loading) return;
-			
+		
+		$('div.user-loader', $(this)).show()
+		
 		var id = $(this).data().userid
 		
 		if (id == 0) {
@@ -408,7 +411,7 @@ $(function () {
 		
 		$('div.bar').css('width','100%');
 		$('div.loading-overlay').fadeIn();
-	    $('div#divProgressBar').slideDown();
+	    // $('div#divProgressBar').slideDown();
 		
 		var currentScale = 1;
 		window.preloaderHandle = 0;
