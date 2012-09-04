@@ -399,7 +399,7 @@ $(function () {
 		
 		$('div.bar').css('width','100%');
 		$('div.loading-overlay').fadeIn();
-		// $('div#divProgressBar').slideDown();
+	    $('div#divProgressBar').slideDown();
 		
 		var currentScale = 1;
 		window.preloaderHandle = 0;
