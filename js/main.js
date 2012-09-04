@@ -306,6 +306,10 @@ var displayUser = function(id) {
 				{
 					"Key": "userId",
 					"Value": window.userId
+				},
+				{
+					"Key": "sessionKey",
+					"Value": Gossamer.authentication.getSessionId()
 				}
 			]
 		}
@@ -395,6 +399,11 @@ $(function () {
 			
 		var id = $(this).data().userid
 		
+		if (id == 0) {
+			$('#lnkShowAddUser').click();
+			return;
+		}
+		
 		window.userId = id
 		
 		$('div.bar').css('width','100%');
@@ -481,7 +490,7 @@ $(function () {
 		
 		article.__Properties = p
 		Gossamer.storage.articles.create(deploymentId, 'User', article, function(article) {
-			console.dir(article)
+			$('#addUserModal').modal('hide')
 			btn.button('reset')
 		}, function() {
 			btn.button('reset')

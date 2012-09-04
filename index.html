@@ -68,7 +68,7 @@
                         <i class="icon-search"></i>
                     </span>
                     <span class="add-on">
-						<a href="#addUserModal" role="button" class="" data-toggle="modal">
+						<a href="#addUserModal" role="button" class="" id="lnkShowAddUser" data-toggle="modal">
 							<i class="icon-plus-sign"></i>
 						</a>
                     </span>
@@ -215,7 +215,13 @@
 				</div>
 			</div>
             <div class="container" style="margin-top:50px">
-				<div class="span12" id="divUserBlocks"></div>
+				<div class="span12" id="divUserBlocks">
+					<div class="user-block usrblk" data-userid="0" data-username="" style="text-align:center">
+							<img src="img/empty-profile-male.png" />
+							<br/>
+                        <div class="user-block-label"><div class="user-loading-image">&nbsp;</div>Click here to add new user</div>
+                    </div></div>
+				</div>
                 <div class="invis" id="divUserBlocksTemplate">{{#users}}
                     <div class="user-block usrblk" data-userid="{{userId}}" data-username="{{userName}}" style="text-align:center">
 						{{#photograph}}
