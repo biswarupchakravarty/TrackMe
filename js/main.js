@@ -181,8 +181,8 @@ var displayUser = function(id) {
 	})
 	
 	var d = new Date()
-	$('#txtStatsDate').val(d.getUTCFullYear() + '-' + (d.getMonth() > 9 ? d.getMonth() : '0' + d.getMonth()) + '-' + d.getDate())
-	$('#txtEventDate').val(d.getUTCFullYear() + '-' + (d.getMonth() > 9 ? d.getMonth() : '0' + d.getMonth()) + '-' + d.getDate())
+	$('#txtStatsDate').val(d.getUTCFullYear() + '-' + (d.getMonth() > 9 ? d.getMonth() : '0' + d.getMonth()) + '-' + (d.getDate() > 9 ? d.getDate() : '0' + d.getDate())).datepicker({dateFormat: "yy-mm-dd"})
+	$('#txtEventDate').val(d.getUTCFullYear() + '-' + (d.getMonth() > 9 ? d.getMonth() : '0' + d.getMonth()) + '-' + (d.getDate() > 9 ? d.getDate() : '0' + d.getDate())).datepicker({dateFormat: "yy-mm-dd"})
 	var wtMax = -1, wtMin = 10000
 	var bsMax = -1, bsMin = 10000
 	var hbStart = new Date();
@@ -393,6 +393,8 @@ var displayUser = function(id) {
 
 
 $(function () {
+	
+	$('#txtDOB').datepicker({dateFormat: "yy-mm-dd"})
 	
 	$('button.alert-close').live('click',function() {
 		var alertIndex = $(this).data().alertindex
