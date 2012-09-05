@@ -96,7 +96,9 @@ Gossamer.models.User = function(id, onLoaded) {
 		// transform the alerts
 		if (base.Alerts && base.Alerts.length > 0) {
 			var index = 0
-			var alerts = base.Alerts.split('|')
+			var alerts = base.Alerts.split('|').filter(function(alert) {
+				return alert.trim().length > 0
+			})
 			base.alerts = alerts.map(function(alert) {
 				var tokens = alert.split('_')
 				return {

@@ -394,6 +394,42 @@ var displayUser = function(id) {
 
 $(function () {
 	
+	$('button.alert-close').live('click',function() {
+		var alertIndex = $(this).data().alertindex
+		var alertUI = $(this).parent()
+		Gossamer.storage.articles.get('healthfinal','user',window.userId,function(article) {
+			if (!article.__Attributes || article.__Attributes.length == 0) return
+			var attr = article.__Attributes.filter(function(attr) {
+				return attr.Key.toLowerCase() == 'alerts'
+			})
+			if (!attr || attr.length == 0) return
+			var alertTokens = attr[0].Value.split('|')
+			var alerts = alertTokens.filter(function(alertToken) {
+				return alertToken.trim().length > 0
+			})
+			alerts.splice(alertIndex, 1)
+			var final = alerts.join('|')
+			var updateCommand = {
+				"UpdateCommands": [
+					{
+						"__type": "UpdateAttributesCommand:http://www.tavisca.com/gossamer/datacontracts/2011/11",
+						"AttributesToAddOrUpdate": [
+							{
+								"Key": "Alerts",
+								"Value": final
+							}
+						]
+					}
+				]
+			}
+			var logger = function() {console.dir(arguments)}
+			
+			Gossamer.storage.articles.update('healthfinal','user',window.userId,updateCommand,function() {
+				alertUI.slideUp()
+			},logger)
+		})
+	})
+	
 	$('#divUserBlocks > div.usrblk').live('mousedown', function() {
 		
 		if (window.loading) return;
@@ -445,7 +481,10 @@ $(function () {
 				var alertCount = 0
 				article.__Attributes.forEach(function(attr) {
 					if (attr.Key.toLowerCase() == 'alerts') {
-						alertCount = attr.Value.split('|').length
+						var tokens = attr.Value.split('|')
+						tokens.forEach(function(token) { 
+							if (token.trim().length > 0) alertCount++
+						})
 					}
 				})
 				if (alertCount != 0) {
@@ -481,7 +520,12 @@ $(function () {
 			
 			article.__Attributes.forEach(function(attr) {
 				if (attr.Key.toLowerCase() == 'alerts') {
-					user.alertCount = attr.Value.split('|').length
+					var tokens = attr.Value.split('|')
+					var alertCount = 0
+					tokens.forEach(function(token) { 
+						if (token.trim().length > 0) alertCount++
+					})
+					if (alertCount > 0) user.alertCount = alertCount
 				}
 			})
 			

@@ -951,7 +951,7 @@ function GossamerStorage(op) {
 			var that = this
 			var args = arguments
 			
-            var url = Gossamer.storage.urlFactory.article.getSearchAllUrl(deploymentId, schemaId, ['orderBy=__UtcDateCreated&isAsc=true', 'pnum=' + pageNumber, 'freetext=' + query, 'psize=100']);
+            var url = Gossamer.storage.urlFactory.article.getSearchAllUrl(deploymentId, schemaId, ['orderBy=__UtcDateCreated&isAsc=true', 'pnum=' + pageNumber, 'freetext=' + query, 'psize=20']);
             Gossamer.utils.ajax.get(url, true, function (data) {
                 if (typeof (data.Articles) != "undefined" && data.Articles != null) {
                     if (typeof (onSuccess) == "function") {
