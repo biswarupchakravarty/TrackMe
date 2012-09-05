@@ -394,7 +394,24 @@ var displayUser = function(id) {
 
 $(function () {
 	
-	$('#txtDOB').datepicker({dateFormat: "yy-mm-dd"})
+	$('#txtDOB').datepicker({
+		dateFormat: "yy-mm-dd",
+		changeMonth: true,
+		changeYear: true,
+		yearRange: "1900:2012"
+	})
+	$('#txtEffFrom').datepicker({
+		dateFormat: "yy-mm-dd",
+		changeMonth: true,
+		changeYear: true,
+		yearRange: "1980:2012"
+	})
+	$('#txtTermDate').datepicker({
+		dateFormat: "yy-mm-dd",
+		changeMonth: true,
+		changeYear: true,
+		yearRange: "2012:2062"
+	})
 	
 	$('button.alert-close').live('click',function() {
 		var alertIndex = $(this).data().alertindex
