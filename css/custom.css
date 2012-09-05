@@ -409,8 +409,15 @@ hr {
 	vertical-align: middle;
 }
 
+.dashboard-alert {
+	width: 700px;
+}
 
-
+.user-badge {
+	position: absolute;
+	top: 22px;
+	left: 140px;
+}
 
 
 
@@ -423,7 +430,7 @@ span[class*="mload-"] {
 	display: inline-block;
 	margin: 12px 2px;
 	
-	.border-radius: 100%;
+	border-radius: 100%;
 	.-webkit-border-radius: 100%;
 	.-moz-border-radius: 100%;
 	

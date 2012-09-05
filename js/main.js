@@ -429,8 +429,41 @@ $(function () {
 		return false;
 	})
 	
+	window.userIds = []
+	
 	// populate the user list
 	Gossamer.storage.articles.searchAll(deploymentId, 'User', '', 1, function(articles) {
+		
+		// keep track for cleanup acivities
+		articles.forEach(function(article) {
+			window.userIds.push(article.__Id)
+		})
+		
+		// the actual refresh script
+		var refreshAlerts = function(userId) {
+			Gossamer.storage.articles.get('healthfinal','user',userId,function(article) {
+				var alertCount = 0
+				article.__Attributes.forEach(function(attr) {
+					if (attr.Key.toLowerCase() == 'alerts') {
+						alertCount = attr.Value.split('|').length
+					}
+				})
+				if (alertCount != 0) {
+					$('#divAlerts' + userId).html(alertCount).show()
+				} else {
+					$('#divAlerts' + userId).hide()
+				}
+			})
+		}
+		
+		window.refreshHandles = []
+		// the script to activate refresh script
+		var attachRefreshScript = function(userId) {
+			window.refreshHandles.push(setInterval(function() {
+				refreshAlerts(userId)
+			}, 5000))
+		}
+		
 		
 		var users = articles.map(function(article) {
 			
@@ -445,6 +478,15 @@ $(function () {
 			
 			if (photos.length > 0 && photos[0].Value && photos[0].Value.trim().length > 0) 
 				user.photograph = photos[0].Value + '?session=' + Gossamer.authentication.getSessionId()
+			
+			article.__Attributes.forEach(function(attr) {
+				if (attr.Key.toLowerCase() == 'alerts') {
+					user.alertCount = attr.Value.split('|').length
+				}
+			})
+			
+			// attach the refresh script
+			attachRefreshScript(article.__Id)
 			
 			return user
 		})

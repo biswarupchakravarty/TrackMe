@@ -92,6 +92,21 @@ Gossamer.models.User = function(id, onLoaded) {
 			var result = (d2 - d1)
 			return result
 		})
+		
+		// transform the alerts
+		if (base.Alerts && base.Alerts.length > 0) {
+			var index = 0
+			var alerts = base.Alerts.split('|')
+			base.alerts = alerts.map(function(alert) {
+				var tokens = alert.split('_')
+				return {
+					statType: tokens[0],
+					value: tokens[1],
+					time: tokens[2],
+					index: index++
+				}
+			})
+		}
 		console.dir(base)
 		onLoaded.apply(base, [base])
 	}

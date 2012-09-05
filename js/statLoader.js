@@ -66,3 +66,16 @@ var StatGenerator = function(userId, opt) {
 		clearInterval(handle)
 	}
 }
+
+
+
+function deleteArticles() {
+	var start = 11
+	var _c = function(){}
+	for (var x=start;x<window.userIds.length;x=x+1) {
+		Gossamer.storage.articles.deleteArticle('healthfinal', window.userIds[x], 'user', function() {console.log('deleted')}, _c)
+	}
+}
+
+
+
