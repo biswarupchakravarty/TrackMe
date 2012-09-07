@@ -1,0 +1,5 @@
+<Modules>
+  <Module PersistentId="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82" ModuleId="HealthWatch" />
+  <Module PersistentId="d:Miscellaneous Files" ModuleId="Tavisca.Gossamer.Model" />
+  <Module PersistentId="Tavisca.Gossamer.Model, Version=0.91.0.0, Culture=neutral" ModuleId="Tavisca.Gossamer.Model_1" />
+</Modules>

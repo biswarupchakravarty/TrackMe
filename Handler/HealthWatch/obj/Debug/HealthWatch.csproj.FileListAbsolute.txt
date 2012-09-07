@@ -1,0 +1,16 @@
+D:\Projects\HealthWatch\HealthWatch\bin\Debug\HealthWatch.dll
+D:\Projects\HealthWatch\HealthWatch\bin\Debug\HealthWatch.pdb
+D:\Projects\HealthWatch\HealthWatch\bin\Debug\Newtonsoft.Json.dll
+D:\Projects\HealthWatch\HealthWatch\bin\Debug\Tavisca.Gossamer.Interfaces.dll
+D:\Projects\HealthWatch\HealthWatch\bin\Debug\Tavisca.Gossamer.Model.dll
+D:\Projects\HealthWatch\HealthWatch\bin\Debug\Tavisca.Messaging.RabbitMQ.dll
+D:\Projects\HealthWatch\HealthWatch\bin\Debug\Tavisca.Gossamer.DataContracts.dll
+D:\Projects\HealthWatch\HealthWatch\bin\Debug\Tavisca.Gossamer.ErrorSpace.dll
+D:\Projects\HealthWatch\HealthWatch\bin\Debug\RabbitMQ.Client.dll
+D:\Projects\HealthWatch\HealthWatch\obj\Debug\ResolveAssemblyReference.cache
+D:\Projects\HealthWatch\HealthWatch\obj\Debug\HealthWatch.dll
+D:\Projects\HealthWatch\HealthWatch\obj\Debug\HealthWatch.pdb
+D:\Projects\HealthWatch\HealthWatch\bin\Debug\Tavisca.Gossamer.Interfaces.pdb
+D:\Projects\HealthWatch\HealthWatch\bin\Debug\Tavisca.Gossamer.Model.pdb
+D:\Projects\HealthWatch\HealthWatch\bin\Debug\Tavisca.Gossamer.DataContracts.pdb
+D:\Projects\HealthWatch\HealthWatch\bin\Debug\Tavisca.Gossamer.ErrorSpace.pdb

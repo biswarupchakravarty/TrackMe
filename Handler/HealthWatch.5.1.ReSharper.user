@@ -1,0 +1,59 @@
+<Configuration>
+  <SettingsComponent>
+    <string />
+    <integer />
+    <boolean>
+      <setting name="SolutionAnalysisEnabled">False</setting>
+    </boolean>
+  </SettingsComponent>
+  <RecentFiles>
+    <RecentFiles>
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:Logger.cs" caret="655" fromTop="24" />
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:Client.cs" caret="158" fromTop="9" />
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:HealthWatch.cs" caret="9027" fromTop="22" />
+    </RecentFiles>
+    <RecentEdits>
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:HealthWatch.cs" caret="2051" fromTop="15" />
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:HealthWatch.cs" caret="1980" fromTop="13" />
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:HealthWatch.cs" caret="1175" fromTop="4" />
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:HealthWatch.cs" caret="3415" fromTop="15" />
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:HealthWatch.cs" caret="5692" fromTop="29" />
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:HealthWatch.cs" caret="5692" fromTop="18" />
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:HealthWatch.cs" caret="10410" fromTop="26" />
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:HealthWatch.cs" caret="3147" fromTop="20" />
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:HealthWatch.cs" caret="5972" fromTop="16" />
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:HealthWatch.cs" caret="6294" fromTop="27" />
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:HealthWatch.cs" caret="5968" fromTop="14" />
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:HealthWatch.cs" caret="6294" fromTop="24" />
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:HealthWatch.cs" caret="6294" fromTop="17" />
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:HealthWatch.cs" caret="5183" fromTop="19" />
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:HealthWatch.cs" caret="6783" fromTop="29" />
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:HealthWatch.cs" caret="5725" fromTop="16" />
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:HealthWatch.cs" caret="384" fromTop="12" />
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:HealthWatch.cs" caret="8529" fromTop="35" />
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:HealthWatch.cs" caret="8119" fromTop="23" />
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:HealthWatch.cs" caret="7882" fromTop="17" />
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:HealthWatch.cs" caret="9976" fromTop="34" />
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:HealthWatch.cs" caret="4021" fromTop="21" />
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:HealthWatch.cs" caret="4514" fromTop="29" />
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:HealthWatch.cs" caret="5229" fromTop="21" />
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:HealthWatch.cs" caret="5638" fromTop="20" />
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:HealthWatch.cs" caret="7112" fromTop="17" />
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:HealthWatch.cs" caret="4792" fromTop="23" />
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:HealthWatch.cs" caret="9434" fromTop="28" />
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:HealthWatch.cs" caret="9775" fromTop="32" />
+      <File id="C2DBCF80-6FAC-4D5B-9B8D-C290ACCA3E82/f:HealthWatch.cs" caret="9027" fromTop="22" />
+    </RecentEdits>
+  </RecentFiles>
+  <NAntValidationSettings>
+    <NAntPath value="" />
+  </NAntValidationSettings>
+  <UnitTestRunner>
+    <Providers />
+  </UnitTestRunner>
+  <UnitTestRunnerNUnit>
+    <NUnitInstallDir IsNull="False">
+    </NUnitInstallDir>
+    <UseAddins>Never</UseAddins>
+  </UnitTestRunnerNUnit>
+</Configuration>

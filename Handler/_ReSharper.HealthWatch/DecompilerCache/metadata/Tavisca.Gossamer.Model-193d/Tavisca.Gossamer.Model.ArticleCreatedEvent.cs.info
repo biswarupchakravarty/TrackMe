@@ -1,0 +1,26 @@
+R# version: 5.1.3000.12
+assembly Tavisca.Gossamer.Model, Version=0.91.0.0, Culture=neutral
+  file D:\Repos\Gossamer\1. Library\Gossamer\Tavisca.Gossamer.Model.dll mtime 9/7/2012 7:59:02 AM
+referenced assembly Tavisca.Gossamer.Infrastructure, Version=0.91.0.0, Culture=neutral
+  file D:\Projects\HealthWatch\HealthWatch\bin\Debug\Tavisca.Gossamer.Infrastructure.dll mtime 9/3/2012 8:49:36 AM
+referenced assembly mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  file C:\Windows\Microsoft.NET\Framework\v4.0.30319\mscorlib.dll mtime 12/15/2011 7:38:30 AM
+referenced assembly System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  file C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.dll mtime 3/18/2010 2:01:26 PM
+referenced assembly System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  file C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Data.dll mtime 3/18/2010 2:01:26 PM
+referenced assembly System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  file C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Core.dll mtime 3/18/2010 2:01:26 PM
+referenced assembly Tavisca.Gossamer.ErrorSpace, Version=0.91.0.0, Culture=neutral
+  file D:\Repos\Gossamer\1. Library\Gossamer\Tavisca.Gossamer.ErrorSpace.dll mtime 9/7/2012 6:09:37 AM
+referenced assembly Tavisca.Gossamer.Interfaces, Version=0.91.0.0, Culture=neutral
+  file D:\Repos\Gossamer\1. Library\Gossamer\Tavisca.Gossamer.Interfaces.dll mtime 9/7/2012 7:59:02 AM
+no resolved referenced assembly Tavisca.Services.Profiling, Version=1.0.0.0, Culture=neutral
+referenced assembly System.Configuration, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
+  file C:\Windows\Microsoft.NET\Framework\v4.0.30319\System.Configuration.dll mtime 3/18/2010 7:46:28 AM
+referenced assembly System.Runtime.Serialization, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  file C:\Windows\Microsoft.NET\Framework\v4.0.30319\System.Runtime.Serialization.dll mtime 3/18/2010 7:46:28 AM
+referenced assembly System.ServiceModel.Web, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35
+  file C:\Windows\Microsoft.NET\Framework\v4.0.30319\System.ServiceModel.Web.dll mtime 2/9/2011 10:04:06 PM
+referenced assembly System.ServiceModel, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  file C:\Windows\Microsoft.NET\Framework\v4.0.30319\System.ServiceModel.dll mtime 2/9/2011 10:40:40 PM
