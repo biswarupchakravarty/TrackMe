@@ -565,12 +565,38 @@ $(function () {
         searchPatient.apply(this, arguments)
     });
     
+	var blured=function(){
+		var flag=true
+		var errMsg=$('#lblErrMsg')
+	    var uname=$(this).val().trim()
+		
+	    if(!uname || uname.length == 0)
+		{
+			 flag=false
+			 errMsg.show()
+			 $(this).addClass("border-color-red")
+		}
+		else{
+		errMsg.hide()
+		$(this).removeClass("border-color-red")
+		}
+	}
+	
+	//var blured=new blur()
+	$('#txtUserName').blur(blured)
+	$('#txtDOB').blur(blured)
+	$('#txtMobileNumber').blur(blured)
+	$('#txtEmail').blur(blured)
     $('button#btnUserSave').click(function() {
 		var btn = $(this)
+		
+		
 		var kv = function(a, b) {
 			return {"Key":a,"Value":b} 
 		}
 		btn.button('loading')
+			
+			
 		var article = {
 			"__CreatedBy": "Strento",
 			"__SchemaType": "User"
@@ -597,6 +623,7 @@ $(function () {
 		p.push(kv("Term_Date",$('#txtTermDate').val()))
 		
 		article.__Properties = p
+		
 		Gossamer.storage.articles.create(deploymentId, 'User', article, function(article) {
 			$('#addUserModal').modal('hide')
 			btn.button('reset')

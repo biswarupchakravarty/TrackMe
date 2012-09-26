@@ -25,6 +25,18 @@ td:first-child{
 body {
 	background: url('../img/bg.png') repeat !important;
 }
+.invis{
+	display:none;
+}
+
+.err{
+	color:red;
+	position:relative;
+	text-align: left;
+}
+.border-color-red{
+	border:1px solid red !important;
+}
 
 .photo-frame {
 	border: 3px solid black;

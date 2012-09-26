@@ -1,6 +1,6 @@
 function UrlFactory() {
 
-	var gossamerUrl = 'http://gossamer.tavisca.com/v0.9/Core';
+	var gossamerUrl = 'http://apis.appacitive.com/v0.9/Core';
 
     this.session = {
 
