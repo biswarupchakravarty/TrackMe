@@ -487,25 +487,25 @@ $(function () {
 	window.userIds = []
 	
 	// populate the user list
-	Gossamer.storage.articles.searchAll(deploymentId, 'User', '', 1, function(articles) {
+	Genesis.storage.articles.searchAll(deploymentId, 'User', '', 1, function(articles) {
 		
 		// keep track for cleanup acivities
 		articles.forEach(function(article) {
-			window.userIds.push(article.__Id)
+			window.userIds.push(article.__id)
 		})
 		
 		// the actual refresh script
 		var refreshAlerts = function(userId) {
-			Gossamer.storage.articles.get('healthfinal','user',userId,function(article) {
+			Genesis.storage.articles.get('health','user',userId,function(article) {
 				var alertCount = 0
-				article.__Attributes.forEach(function(attr) {
-					if (attr.Key.toLowerCase() == 'alerts') {
-						var tokens = attr.Value.split('|')
+				for (var attr in article.__attributes) {
+					if (attr == 'alerts') {
+						var tokens = article.__attributes[attr].split('|')
 						tokens.forEach(function(token) { 
 							if (token.trim().length > 0) alertCount++
 						})
 					}
-				})
+				}
 				if (alertCount != 0) {
 					$('#divAlerts' + userId).html(alertCount).show()
 				} else {
@@ -525,31 +525,27 @@ $(function () {
 		
 		var users = articles.map(function(article) {
 			
-			var userName = article.__Properties.filter(function(prop) {
-				return prop.Key == 'Name'
-			})[0].Value
-			var photos = article.__Properties.filter(function(prop) {
-				return prop.Key == 'Photograph'
-			})
+			var userName = article.name
+			var photos = article.photograph
 			
-			var user = {userName: userName, userId: article.__Id}
+			var user = {userName: userName, userId: article.__id}
 			
-			if (photos.length > 0 && photos[0].Value && photos[0].Value.trim().length > 0) 
-				user.photograph = photos[0].Value + '?session=' + Gossamer.authentication.getSessionId()
+			if (article.photograph) 
+				user.photograph = article.photograph + '?session=' + Gossamer.authentication.getSessionId()
 			
-			article.__Attributes.forEach(function(attr) {
-				if (attr.Key.toLowerCase() == 'alerts') {
-					var tokens = attr.Value.split('|')
+			for (var attr in article.__attributes) {
+				if (attr == 'alerts') {
+					var tokens = article.__attributes[attr].split('|')
 					var alertCount = 0
 					tokens.forEach(function(token) { 
 						if (token.trim().length > 0) alertCount++
 					})
 					if (alertCount > 0) user.alertCount = alertCount
 				}
-			})
+			}
 			
 			// attach the refresh script
-			attachRefreshScript(article.__Id)
+			attachRefreshScript(article.__id)
 			
 			return user
 		})

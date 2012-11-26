@@ -13,19 +13,16 @@ Gossamer.models.User = function(id, onLoaded) {
 	
 	var translate = function(article) {
 		if (!article.__Properties || article.__Properties.length == 0) return
-		for (var x=0;x < article.__Properties.length;x=x+1) {
-			this[article.__Properties[x].Key] = article.__Properties[x].Value
-		}
-		if (article.__Attributes && article.__Attributes.length && article.__Attributes.length > 0) {
-			for (var x=0;x < article.__Attributes.length;x=x+1) {
-				this[article.__Attributes[x].Key] = article.__Attributes[x].Value
+		if (article.__attributes) {
+			for (var attr in article.__attributes) {
+				this[attr] = article.__attributes.attr
 			}
 		}
 	}
 	
 	var load = function() {
 		var that = this
-		Gossamer.storage.articles.get(deploymentId, 'User', userId, function() {
+		Genesis.storage.articles.get(deploymentId, 'User', userId, function() {
 			translate.apply(base, [arguments[0]])
 		
 			queryUserGraph()
@@ -128,7 +125,7 @@ Gossamer.models.User = function(id, onLoaded) {
 			})
 		})
 		
-		Gossamer.storage.articles.queryGraph(deploymentId, query, function(projection) {
+		Genesis.storage.articles.queryGraph(deploymentId, query, function(projection) {
 			parseGraphQuery(projection)
 		}, function() {
 			alert('graph query bugged out.')

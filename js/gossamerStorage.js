@@ -4,7 +4,7 @@ Gossamer.utils.cookies
 **/
 
 function GossamerStorage(op) {
-    var SESSION_COOKIE_NAME = 'Gossamer-session';
+    var SESSION_COOKIE_NAME = 'genesis-session';
     var sessionServiceUrl = '/session.svc';
 
     var options = op || {};
@@ -19,14 +19,148 @@ function GossamerStorage(op) {
 
     this.urlFactory = new UrlFactory();
 
+    this.application = {
+        searchAll: function (queryParams) {
+            var url = Genesis.storage.urlFactory.application.getSearchAllUrl(queryParams);
+            Gossamer.utils.ajax.get(url, false, function (data) {
+                if (data.status.code) {
+                    if (typeof (data.applications) != "undefined" && data.applications != null)
+                        EventManager.fire("storage.applicationFetched", this, { applications: data.applications });
+                } else {
+                    //TODO: Remove this and add some other handling
+                    EventManager.fire("root.userLogOut", this, {});
+                }
+            }, function () {
+                //TODO: Remove this and add some other handling
+                EventManager.fire("root.userLogOut", this, {});
+            });
+        },
+        get: function (appName, onSuccess, onError) {
+            var url = Genesis.storage.urlFactory.application.getGetUrl(appName);
+            Gossamer.utils.ajax.get(url, true, function (data) {
+                if (data.status.code && data.status.code == '200') {
+                    if (typeof (data.application) != "undefined" && data.application != null)
+                        onSuccess(data.application)
+                } else {
+                    onError(data)
+                }
+            }, function () {
+                onError({})
+            });
+        },
+        create: function (application, onSuccess, onError) {
+            Gossamer.utils.ajax.put(Genesis.storage.urlFactory.application.getCreateUrl(), application, true, function (data) {
+                if (typeof (data.applicationid) != "undefined" && data.applicationid != null) {
+                    if (typeof (onSuccess) == "function") {
+                        onSuccess(data.applicationid, data.status.referenceid);
+                    }
+                } else {
+                    if (typeof (onError) == "function") {
+                        onError.apply(arguments.callee);
+                    }
+                }
+            }, function () {
+                if (typeof (onError) == "function") {
+                    onError.apply(arguments.callee);
+                }
+            });
+        },
+        createSession: function (apiKey, onSuccess, onError) {
+            var inputs = { __type: "Session", ApiKey: apiKey, IsNonSliding: false, UsageCount: -1, WindowTime: Genesis.config.appSessionTime };
+            Gossamer.utils.ajax.put(Genesis.storage.urlFactory.application.getCreateSessionUrl(), inputs, true, function (data) {
+                if (data && data.status && data.status.code && data.status.code == "200") {
+                    if (typeof (onSuccess) == "function") {
+                        onSuccess();
+                    }
+                } else {
+                    if (typeof (onError) == "function") {
+                        onError(data.message);
+                    }
+                }
+            }, function () {
+                if (typeof (onError) == "function") {
+                    onError(data.message);
+                }
+            });
+        },
+        deleteApplication: function (applicationId, onSuccess, onError) {
+            Gossamer.utils.ajax.del(Genesis.storage.urlFactory.application.getDeleteUrl(applicationId), true, function (data) {
+                data = $.parseJSON(data);
+                if (data.code != undefined && data.code != null) {
+                    var isSuccessful = data.code == "200";
+                    if (typeof (onSuccess) == "function") {
+                        onSuccess(isSuccessful);
+                    }
+                } else {
+                    if (typeof (onError) == "function") {
+                        onError(false);
+                    }
+                }
+            }, function () {
+                if (typeof (onError) == "function") {
+                    onError(false);
+                }
+            });
+        },
+        checkName: function (name, makeAsyncCall, onSuccess, onError) {
+            Gossamer.utils.ajax.get(Genesis.storage.urlFactory.application.getCheckNameUrl(name), makeAsyncCall, function (data) {
+
+                if (typeof (data.status.code) != "undefined" && data.status.code != null && data.status.code == '200') {
+                    if (typeof (onSuccess) == 'function')
+                        onSuccess(data.result);
+                } else {
+                    if (typeof (onError) == 'function')
+                        onError(false);
+                }
+            }, function () {
+                if (typeof (onError) == "function") {
+                    onError(false);
+                }
+            });
+        },
+
+        hasApp: function (onSuccess, onError) {
+            Gossamer.utils.ajax.get(Genesis.storage.urlFactory.application.getHasAppUrl(), false, function (data) {
+                if (data && data != null && data.status.code == '200') {
+                    if (typeof (onSuccess) == 'function')
+                        onSuccess(data.result);
+                } else {
+                    if (typeof (onError) == 'function')
+                        onError(false);
+                }
+            }, function () {
+                if (typeof (onError) == "function") {
+                    onError(true);
+                }
+            });
+        },
+        getPublishStatus: function (refId, onSuccess, onError) {
+            Gossamer.utils.ajax.get(Genesis.storage.urlFactory.application.getGetPublishStatusUrl(refId), true, function (data) {
+                if (data.status != null && data.status.code == "200") {
+                    if (typeof (onSuccess) == "function") {
+                        onSuccess(data.log);
+                    }
+                } else {
+                    if (typeof (onError) == "function") {
+                        onError(data.status);
+                    }
+                }
+            }, function () {
+                if (typeof (onError) == "function") {
+                    onError.apply(arguments.callee);
+                }
+            });
+        }
+    };
+
     this.session = {
         createSession: function (loginCredentials, onSuccess, onError) {
-            var url = Gossamer.storage.urlFactory.session.getCreateSessionUrl(loginCredentials);
+            var url = Genesis.storage.urlFactory.session.getCreateSessionUrl(loginCredentials);
             Gossamer.utils.ajax.get(url, true, function (data) {
-                if (typeof (data.Code) != "undefined" && data.Code != null && data.Code == '200') {
+                if (typeof (data.code) != "undefined" && data.code != null && data.code == '200') {
                     if (typeof (onSuccess) == 'function')
-                        onSuccess(data.SessionId);
-                    Gossamer.utils.cookies.set({ name: SESSION_COOKIE_NAME, value: data.SessionId });
+                        onSuccess(data.sessionid);
+                    Genesis.utils.cookies.set({ name: SESSION_COOKIE_NAME, value: data.sessionid });
                 } else {
                     if (typeof (onError) == 'function')
                         onError();
@@ -38,18 +172,18 @@ function GossamerStorage(op) {
     //schema storage
     this.schemas = {
         exportSchemas: function (id) {
-            var url = Gossamer.storage.urlFactory.schema.getExportUrl(id);
+            var url = Genesis.storage.urlFactory.schema.getExportUrl(id);
 
             // window.location = url;
             $('<iframe></iframe>').appendTo($(document.body)).attr('src', url).attr('id', 'tmpIFrame').css('width', '0').css('height', '0');
 
         },
         searchAll: function (catalogName, onSuccess, onError) {
-            var url = Gossamer.storage.urlFactory.schema.getSearchAllUrl(catalogName, ['orderBy=UtcLastUpdatedDate']);
+            var url = Genesis.storage.urlFactory.schema.getSearchAllUrl(catalogName, ['orderBy=name']);
             Gossamer.utils.ajax.get(url, true, function (data) {
-                if (typeof (data.Schemas) != "undefined" && data.Schemas != null) {
+                if (typeof (data.schemas) != "undefined" && data.schemas != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Schemas);
+                        onSuccess(data.schemas);
                     }
                 } else {
                     if (typeof (onError) == "function") {
@@ -64,11 +198,11 @@ function GossamerStorage(op) {
         },
 
         getProperties: function (schemaId, onSuccess, onError) {
-            var url = Gossamer.storage.urlFactory.schema.getGetPropertiesUrl(schemaId);
+            var url = Genesis.storage.urlFactory.schema.getGetPropertiesUrl(schemaId);
             Gossamer.utils.ajax.get(url, true, function (data) {
-                if (typeof (data.Schema) != "undefined" && data.Schema != null) {
+                if (typeof (data.schema) != "undefined" && data.schema != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Schema);
+                        onSuccess(data.schema);
                     }
                 } else {
                     if (typeof (onError) == "function") {
@@ -77,16 +211,16 @@ function GossamerStorage(op) {
                 }
             }, function () {
                 if (typeof (onError) == "function") {
-                    onError.apply(arguments.callee);
+                    onError();
                 }
             });
         },
 
         update: function (schema, onSuccess, onError) {
-            Gossamer.utils.ajax.post(Gossamer.storage.urlFactory.schema.getUpdateUrl(schema.Id), schema, true, function (data) {
-                if (typeof (data.Schema) != "undefined" && data.Schema != null) {
+            Gossamer.utils.ajax.post(Genesis.storage.urlFactory.schema.getUpdateUrl(schema.id), schema, true, function (data) {
+                if (typeof (data.schema) != "undefined" && data.schema != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Schema);
+                        onSuccess(data.schema);
                     }
                 } else {
                     if (typeof (onError) == "function") {
@@ -101,14 +235,14 @@ function GossamerStorage(op) {
         },
 
         create: function (schema, onSuccess, onError) {
-            Gossamer.utils.ajax.put(Gossamer.storage.urlFactory.schema.getCreateUrl(), schema, true, function (data) {
-                if (typeof (data.Schema) != "undefined" && data.Schema != null) {
+            Gossamer.utils.ajax.put(Genesis.storage.urlFactory.schema.getCreateUrl(), schema, true, function (data) {
+                if (typeof (data.schema) != "undefined" && data.schema != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Schema);
+                        onSuccess(data.schema);
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError.apply(arguments.callee, [data]);
+                        onError.apply(arguments.callee,[data]);
                     }
                 }
             }, function () {
@@ -119,8 +253,8 @@ function GossamerStorage(op) {
         },
 
         deleteSchema: function (schemaId, onSuccess, onError) {
-            Gossamer.utils.ajax.del(Gossamer.storage.urlFactory.schema.getDeleteUrl(schemaId), false, function (data) {
-                if (typeof (data.Code) != "undefined" && data.Code != null && data.Code == '200') {
+            Gossamer.utils.ajax.del(Genesis.storage.urlFactory.schema.getDeleteUrl(schemaId), false, function (data) {
+                if (typeof (data.code) != "undefined" && data.code != null && data.code == '200') {
                     if (typeof (onSuccess) == "function") {
                         onSuccess(data);
                     }
@@ -137,14 +271,14 @@ function GossamerStorage(op) {
         },
 
         addProperty: function (schemaId, property, onSuccess, onError) {
-            Gossamer.utils.ajax.put(Gossamer.storage.urlFactory.schema.getAddPropertyUrl(schemaId), property, true, function (data) {
-                if (typeof (data.Schema) != "undefined" && data.Schema != null) {
+            Gossamer.utils.ajax.put(Genesis.storage.urlFactory.schema.getAddPropertyUrl(schemaId), property, true, function (data) {
+                if (typeof (data.schema) != "undefined" && data.schema != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Schema);
+                        onSuccess(data.schema);
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError(data.Status);
+                        onError(data.status);
                     }
                 }
             }, function () {
@@ -155,14 +289,14 @@ function GossamerStorage(op) {
         },
 
         updateProperty: function (schemaId, property, onSuccess, onError) {
-            Gossamer.utils.ajax.post(Gossamer.storage.urlFactory.schema.getUpdatePropertyUrl(schemaId), property, true, function (data) {
-                if (typeof (data.Schema) != "undefined" && data.Schema != null) {
+            Gossamer.utils.ajax.post(Genesis.storage.urlFactory.schema.getUpdatePropertyUrl(schemaId), property, true, function (data) {
+                if (typeof (data.schema) != "undefined" && data.schema != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Schema);
+                        onSuccess(data.schema);
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError(data.Status);
+                        onError(data.status);
                     }
                 }
             }, function () {
@@ -173,14 +307,14 @@ function GossamerStorage(op) {
         },
 
         deleteProperty: function (schemaId, propertyId, onSuccess, onError) {
-            Gossamer.utils.ajax.del(Gossamer.storage.urlFactory.schema.getDeletePropertyUrl(schemaId, propertyId), true, function (data) {
-                if (typeof (data.Schema) != "undefined" && data.Schema != null) {
+            Gossamer.utils.ajax.del(Genesis.storage.urlFactory.schema.getDeletePropertyUrl(schemaId, propertyId), true, function (data) {
+                if (typeof (data.schema) != "undefined" && data.schema != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Schema);
+                        onSuccess(data.schema);
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError(data.Status);
+                        onError(data.status);
                     }
                 }
             }, function () {
@@ -191,14 +325,14 @@ function GossamerStorage(op) {
         },
 
         updateAttributes: function (schema, onSuccess, onError) {
-            Gossamer.utils.ajax.post(Gossamer.storage.urlFactory.schema.getUpdateAttributesUrl(schema.Id), schema.Attributes, true, function (data) {
-                if (typeof (data.Schema) != "undefined" && data.Schema != null) {
+            Gossamer.utils.ajax.post(Genesis.storage.urlFactory.schema.getUpdateAttributesUrl(schema.id), schema.attributes, true, function (data) {
+                if (typeof (data.schema) != "undefined" && data.schema != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Schema);
+                        onSuccess(data.schema);
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError(data.Status);
+                        onError(data.status);
                     }
                 }
             }, function () {
@@ -210,7 +344,7 @@ function GossamerStorage(op) {
 
         getSchemaRawWithProperties: function (schemaId, onSuccess, onError) {
             onSuccess = onSuccess || function () { };
-            var url = Gossamer.storage.urlFactory.schema.getGetUrl(schemaId);
+            var url = Genesis.storage.urlFactory.schema.getGetUrl(schemaId);
             Gossamer.utils.ajax.get(url, true, function (data) {
                 onSuccess(data, url);
             }, function () {
@@ -224,21 +358,21 @@ function GossamerStorage(op) {
     //relation storage
     this.relations = {
         exportRelations: function (id) {
-            var url = Gossamer.storage.urlFactory.relation.getExportUrl(id);
-
-            window.location = url;
+            var url = Genesis.storage.urlFactory.relation.getExportUrl(id);
+            $('<iframe></iframe>').appendTo($(document.body)).attr('src', url).attr('id', 'tmpIFrame').css('width', '0').css('height', '0');
+            //window.location = url;
         },
 
         searchAll: function (catalogName, onSuccess, onError) {
-            var url = Gossamer.storage.urlFactory.relation.getSearchAllUrl(catalogName);
+            var url = Genesis.storage.urlFactory.relation.getSearchAllUrl(catalogName, ['orderBy=name']);
             Gossamer.utils.ajax.get(url, true, function (data) {
-                if (typeof (data.Relations) != "undefined" && data.Relations != null) {
+                if (typeof (data.relations) != "undefined" && data.relations != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Relations);
+                        onSuccess(data.relations);
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError(data.Status);
+                        onError(data.status);
                     }
                 }
             }, function () {
@@ -249,15 +383,15 @@ function GossamerStorage(op) {
         },
 
         searchBySchema: function (blueprintName, schemaName, onSuccess, onError) {
-            var url = Gossamer.storage.urlFactory.relation.getSearchBySchemaUrl(blueprintName, schemaName);
+            var url = Genesis.storage.urlFactory.relation.getSearchBySchemaUrl(blueprintName, schemaName);
             Gossamer.utils.ajax.get(url, true, function (data) {
-                if (typeof (data.Relations) != "undefined" && data.Relations != null) {
+                if (typeof (data.relations) != "undefined" && data.relations != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Relations);
+                        onSuccess(data.relations);
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError(data.Status);
+                        onError(data.status);
                     }
                 }
             }, function () {
@@ -268,15 +402,15 @@ function GossamerStorage(op) {
         },
 
         getProperties: function (relationId, onSuccess, onError) {
-            var url = Gossamer.storage.urlFactory.relation.getGetPropertiesUrl(relationId);
+            var url = Genesis.storage.urlFactory.relation.getGetPropertiesUrl(relationId);
             Gossamer.utils.ajax.get(url, true, function (data) {
-                if (typeof (data.Relation) != "undefined" && data.Relation != null) {
+                if (typeof (data.relation) != "undefined" && data.relation != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Relation);
+                        onSuccess(data.relation);
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError.apply(arguments.callee);
+                        onError.apply(arguments.callee,[data]);
                     }
                 }
             }, function () {
@@ -287,10 +421,10 @@ function GossamerStorage(op) {
         },
 
         create: function (relation, onSuccess, onError) {
-            Gossamer.utils.ajax.put(Gossamer.storage.urlFactory.relation.getCreateUrl(), relation, true, function (data) {
-                if (typeof (data.Relation) != "undefined" && data.Relation != null) {
+            Gossamer.utils.ajax.put(Genesis.storage.urlFactory.relation.getCreateUrl(), relation, true, function (data) {
+                if (typeof (data.relation) != "undefined" && data.relation != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Relation);
+                        onSuccess(data.relation);
                     }
                 } else {
                     if (typeof (onError) == "function") {
@@ -305,10 +439,10 @@ function GossamerStorage(op) {
         },
 
         update: function (relation, onSuccess, onError) {
-            Gossamer.utils.ajax.post(Gossamer.storage.urlFactory.relation.getUpdateUrl(relation.Id), relation, true, function (data) {
-                if (typeof (data.Relation) != "undefined" && data.Relation != null) {
+            Gossamer.utils.ajax.post(Genesis.storage.urlFactory.relation.getUpdateUrl(relation.id), relation, true, function (data) {
+                if (typeof (data.relation) != "undefined" && data.relation != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Relation);
+                        onSuccess(data.relation);
                     }
                 } else {
                     if (typeof (onError) == "function") {
@@ -323,10 +457,10 @@ function GossamerStorage(op) {
         },
 
         updateEndPoint: function (relationId, endPoint, type, onSuccess, onError) {
-            Gossamer.utils.ajax.post(Gossamer.storage.urlFactory.relation.getUpdateEndPointUrl(relationId, type), endPoint, true, function (data) {
-                if (typeof (data.Relation) != "undefined" && data.Relation != null) {
+            Gossamer.utils.ajax.post(Genesis.storage.urlFactory.relation.getUpdateEndPointUrl(relationId, type), endPoint, true, function (data) {
+                if (typeof (data.relation) != "undefined" && data.relation != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Relation);
+                        onSuccess(data.relation);
                     }
                 } else {
                     if (typeof (onError) == "function") {
@@ -341,8 +475,8 @@ function GossamerStorage(op) {
         },
 
         deleteRelation: function (relationId, onSuccess, onError) {
-            Gossamer.utils.ajax.del(Gossamer.storage.urlFactory.relation.getDeleteUrl(relationId), false, function (data) {
-                if (typeof (data.Code) != "undefined" && data.Code != null && data.Code == "200") {
+            Gossamer.utils.ajax.del(Genesis.storage.urlFactory.relation.getDeleteUrl(relationId), false, function (data) {
+                if (typeof (data.code) != "undefined" && data.code != null && data.code == "200") {
                     if (typeof (onSuccess) == "function") {
                         onSuccess(data);
                     }
@@ -359,14 +493,14 @@ function GossamerStorage(op) {
         },
 
         addProperty: function (relationId, property, onSuccess, onError) {
-            Gossamer.utils.ajax.put(Gossamer.storage.urlFactory.relation.getAddPropertyUrl(relationId), property, true, function (data) {
-                if (typeof (data.Relation) != "undefined" && data.Relation != null) {
+            Gossamer.utils.ajax.put(Genesis.storage.urlFactory.relation.getAddPropertyUrl(relationId), property, true, function (data) {
+                if (typeof (data.relation) != "undefined" && data.relation != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Relation);
+                        onSuccess(data.relation);
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError(data.Status);
+                        onError(data.status);
                     }
                 }
             }, function () {
@@ -377,14 +511,14 @@ function GossamerStorage(op) {
         },
 
         updateProperty: function (relationId, property, onSuccess, onError) {
-            Gossamer.utils.ajax.post(Gossamer.storage.urlFactory.relation.getUpdatePropertyUrl(relationId), property, true, function (data) {
-                if (typeof (data.Relation) != "undefined" && data.Relation != null) {
+            Gossamer.utils.ajax.post(Genesis.storage.urlFactory.relation.getUpdatePropertyUrl(relationId), property, true, function (data) {
+                if (typeof (data.relation) != "undefined" && data.relation != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Relation);
+                        onSuccess(data.relation);
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError(data.Status);
+                        onError(data.status);
                     }
                 }
             }, function () {
@@ -395,14 +529,14 @@ function GossamerStorage(op) {
         },
 
         deleteProperty: function (relationId, propertyId, onSuccess, onError) {
-            Gossamer.utils.ajax.del(Gossamer.storage.urlFactory.relation.getDeletePropertyUrl(relationId, propertyId), true, function (data) {
-                if (typeof (data.Relation) != "undefined" && data.Relation != null) {
+            Gossamer.utils.ajax.del(Genesis.storage.urlFactory.relation.getDeletePropertyUrl(relationId, propertyId), true, function (data) {
+                if (typeof (data.relation) != "undefined" && data.relation != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Relation);
+                        onSuccess(data.relation);
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError(data.Status);
+                        onError(data.status);
                     }
                 }
             }, function () {
@@ -413,14 +547,14 @@ function GossamerStorage(op) {
         },
 
         updateAttributes: function (relation, onSuccess, onError) {
-            Gossamer.utils.ajax.post(Gossamer.storage.urlFactory.relation.getUpdateAttributesUrl(relation.Id), relation.Attributes, true, function (data) {
-                if (typeof (data.Relation) != "undefined" && data.Relation != null) {
+            Gossamer.utils.ajax.post(Genesis.storage.urlFactory.relation.getUpdateAttributesUrl(relation.id), relation.attributes, true, function (data) {
+                if (typeof (data.relation) != "undefined" && data.relation != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Relation);
+                        onSuccess(data.relation);
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError.apply(arguments[0].Status);
+                        onError.apply(arguments[0].status);
                     }
                 }
             }, function () {
@@ -432,7 +566,7 @@ function GossamerStorage(op) {
 
         getRelationRawWithProperties: function (relationId, onSuccess, onError) {
             onSuccess = onSuccess || function () { };
-            var url = Gossamer.storage.urlFactory.relation.getGetUrl(relationId);
+            var url = Genesis.storage.urlFactory.relation.getGetUrl(relationId);
             Gossamer.utils.ajax.get(url, true, function (data) {
                 onSuccess(data, url);
             }, function () {
@@ -446,21 +580,21 @@ function GossamerStorage(op) {
     //cannedlist storage
     this.cannedLists = {
         exportLists: function (id) {
-            var url = Gossamer.storage.urlFactory.cannedList.getExportUrl(id);
+            var url = Genesis.storage.urlFactory.cannedList.getExportUrl(id);
             window.location = url;
         },
 
         exportListItems: function (id, cannedListId) {
-            var url = Gossamer.storage.urlFactory.cannedList.getListItemExportUrl(id, cannedListId);
+            var url = Genesis.storage.urlFactory.cannedList.getListItemExportUrl(id, cannedListId);
             window.location = url;
         },
 
         searchAll: function (catalogName, onSuccess, onError) {
-            var url = Gossamer.storage.urlFactory.cannedList.getSearchAllUrl(catalogName);
+            var url = Genesis.storage.urlFactory.cannedList.getSearchAllUrl(catalogName, ['orderBy=name']);
             Gossamer.utils.ajax.get(url, true, function (data) {
-                if (typeof (data.Lists) != "undefined" && data.Lists != null) {
+                if (typeof (data.lists) != "undefined" && data.lists != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Lists);
+                        onSuccess(data.lists);
                     }
                 } else {
                     if (typeof (onError) == "function") {
@@ -475,11 +609,11 @@ function GossamerStorage(op) {
         },
 
         getListWithItems: function (cannedListId, onSuccess, onError) {
-            var url = Gossamer.storage.urlFactory.cannedList.getGetItemsUrl(cannedListId);
+            var url = Genesis.storage.urlFactory.cannedList.getGetItemsUrl(cannedListId);
             Gossamer.utils.ajax.get(url, true, function (data) {
-                if (typeof (data.List) != "undefined" && data.List != null) {
+                if (typeof (data.list) != "undefined" && data.list != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.List);
+                        onSuccess(data.list);
                     }
                 } else {
                     if (typeof (onError) == "function") {
@@ -494,10 +628,10 @@ function GossamerStorage(op) {
         },
 
         getListItems: function (cannedListId, queryParams, onSuccess, onError) {
-            Gossamer.utils.ajax.get(Gossamer.storage.urlFactory.cannedList.getSearchListItemsUrl(cannedListId, queryParams), true, function (data) {
-                if (typeof (data.ListItems) != "undefined" && data.ListItems != null) {
+            Gossamer.utils.ajax.get(Genesis.storage.urlFactory.cannedList.getSearchListItemsUrl(cannedListId, queryParams), true, function (data) {
+                if (typeof (data.listitems) != "undefined" && data.listitems != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.ListItems);
+                        onSuccess(data.listitems);
                     }
                 } else {
                     if (typeof (onError) == "function") {
@@ -513,14 +647,14 @@ function GossamerStorage(op) {
 
 
         create: function (cannedList, onSuccess, onError) {
-            Gossamer.utils.ajax.put(Gossamer.storage.urlFactory.cannedList.getCreateUrl(), cannedList, true, function (data) {
-                if (typeof (data.List) != "undefined" && data.List != null) {
+            Gossamer.utils.ajax.put(Genesis.storage.urlFactory.cannedList.getCreateUrl(), cannedList, true, function (data) {
+                if (typeof (data.list) != "undefined" && data.list != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.List);
+                        onSuccess(data.list);
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError.apply(arguments.callee);
+                        onError.apply(arguments.callee,[data]);
                     }
                 }
             }, function () {
@@ -531,8 +665,8 @@ function GossamerStorage(op) {
         },
 
         deleteCannedList: function (cannedListId, onSuccess, onError) {
-            Gossamer.utils.ajax.del(Gossamer.storage.urlFactory.cannedList.getDeleteUrl(cannedListId), true, function (data) {
-                if (typeof (data.Code) != "undefined" && data.Code != null) {
+            Gossamer.utils.ajax.del(Genesis.storage.urlFactory.cannedList.getDeleteUrl(cannedListId), true, function (data) {
+                if (typeof (data.code) != "undefined" && data.code != null) {
                     if (typeof (onSuccess) == "function") {
                         onSuccess(data);
                     }
@@ -549,8 +683,8 @@ function GossamerStorage(op) {
         },
 
         updateListItemPosition: function (cannedListId, currentPosition, newPosition, onSuccess, onError) {
-            Gossamer.utils.ajax.get(Gossamer.storage.urlFactory.cannedList.getUpdateListItemPositionUrl(cannedListId, currentPosition, newPosition), true, function (data) {
-                if (typeof (data.List) != "undefined" && data.List != null) {
+            Gossamer.utils.ajax.get(Genesis.storage.urlFactory.cannedList.getUpdateListItemPositionUrl(cannedListId, currentPosition, newPosition), true, function (data) {
+                if (typeof (data.list) != "undefined" && data.list != null) {
                     if (typeof (onSuccess) == "function") {
                         onSuccess(data);
                     }
@@ -567,8 +701,8 @@ function GossamerStorage(op) {
         },
 
         deleteListItem: function (cannedListId, listItemName, onSuccess, onError) {
-            Gossamer.utils.ajax.del(Gossamer.storage.urlFactory.cannedList.getDeleteListItemUrl(cannedListId, listItemName), true, function (data) {
-                if (typeof (data.List) != "undefined" && data.List != null) {
+            Gossamer.utils.ajax.del(Genesis.storage.urlFactory.cannedList.getDeleteListItemUrl(cannedListId, listItemName), true, function (data) {
+                if (typeof (data.list) != "undefined" && data.list != null) {
                     if (typeof (onSuccess) == "function") {
                         onSuccess(data);
                     }
@@ -585,14 +719,14 @@ function GossamerStorage(op) {
         },
 
         addListItem: function (cannedListId, listItem, onSuccess, onError) {
-            Gossamer.utils.ajax.post(Gossamer.storage.urlFactory.cannedList.getAddListItemsUrl(cannedListId), [listItem], true, function (data) {
-                if (typeof (data.List) != "undefined" && data.List != null) {
+            Gossamer.utils.ajax.post(Genesis.storage.urlFactory.cannedList.getAddListItemsUrl(cannedListId), [listItem], true, function (data) {
+                if (typeof (data.list) != "undefined" && data.list != null) {
                     if (typeof (onSuccess) == "function") {
                         onSuccess(data);
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError.apply(data.Status);
+                        onError.apply(data.status);
                     }
                 }
             }, function () {
@@ -603,14 +737,14 @@ function GossamerStorage(op) {
         },
 
         updateListItem: function (cannedListId, oldName, listItem, onSuccess, onError) {
-            Gossamer.utils.ajax.post(Gossamer.storage.urlFactory.cannedList.getUpdateListItemUrl(cannedListId, oldName), listItem, true, function (data) {
-                if (typeof (data.List) != "undefined" && data.List != null) {
+            Gossamer.utils.ajax.post(Genesis.storage.urlFactory.cannedList.getUpdateListItemUrl(cannedListId, oldName), listItem, true, function (data) {
+                if (typeof (data.list) != "undefined" && data.list != null) {
                     if (typeof (onSuccess) == "function") {
                         onSuccess(data);
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError.apply(data.Status);
+                        onError.apply(data.status);
                     }
                 }
             }, function () {
@@ -621,10 +755,10 @@ function GossamerStorage(op) {
         },
 
         update: function (list, onSuccess, onError) {
-            Gossamer.utils.ajax.post(Gossamer.storage.urlFactory.cannedList.getUpdateUrl(list.Id), list, true, function (data) {
-                if (typeof (data.List) != "undefined" && data.List != null) {
+            Gossamer.utils.ajax.post(Genesis.storage.urlFactory.cannedList.getUpdateUrl(list.id), list, true, function (data) {
+                if (typeof (data.list) != "undefined" && data.list != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.List);
+                        onSuccess(data.list);
                     }
                 } else {
                     if (typeof (onError) == "function") {
@@ -640,7 +774,7 @@ function GossamerStorage(op) {
 
         getCannedListRawWithItems: function (listId, onSuccess, onError) {
             onSuccess = onSuccess || function () { };
-            var url = Gossamer.storage.urlFactory.cannedList.getGetUrl(listId);
+            var url = Genesis.storage.urlFactory.cannedList.getGetUrl(listId);
             Gossamer.utils.ajax.get(url, true, function (data) {
                 onSuccess(data, url);
             }, function () {
@@ -654,7 +788,7 @@ function GossamerStorage(op) {
     var catalogServiceUrl = '/blueprint.svc';
     this.catalogs = {
         searchAll: function (onSuccess, onError) {
-            var url = Gossamer.storage.urlFactory.catalog.getSearchAllUrl();
+            var url = Genesis.storage.urlFactory.catalog.getSearchAllUrl();
             Gossamer.utils.ajax.get(url, true, function (data) {
                 if (typeof (data.Blueprints) != "undefined" && data.Blueprints != null) {
                     if (typeof (onSuccess) == "function") {
@@ -662,7 +796,7 @@ function GossamerStorage(op) {
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError(data.Status);
+                        onError(data.status);
                     }
                 }
             }, function () {
@@ -674,16 +808,51 @@ function GossamerStorage(op) {
     };
 
     this.blueprints = {
-
-        create: function (blueprint, onSuccess, onError) {
-            Gossamer.utils.ajax.put(Gossamer.storage.urlFactory.blueprint.getCreateUrl(), blueprint, true, function (data) {
-                if (typeof (data.Blueprint) != "undefined" && data.Blueprint != null) {
+        get: function (bId, onSuccess, onError) {
+            Gossamer.utils.ajax.get(Genesis.storage.urlFactory.blueprint.getGetUrl(bId), true, function (data) {
+                if (typeof (data.blueprint) != "undefined" && data.blueprint != null && data.status != null && data.status.code == "200") {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Blueprint);
+                        onSuccess(data.blueprint);
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError(data.Status);
+                        onError(data.status);
+                    }
+                }
+            }, function () {
+                if (typeof (onError) == "function") {
+                    onError.apply(arguments.callee);
+                }
+            });
+        },
+
+        del: function (bId, onSuccess, onError) {
+            Gossamer.utils.ajax.del(Genesis.storage.urlFactory.blueprint.getDeleteUrl(bId), true, function (data) {
+                if (typeof (data.code) != "undefined" && data.code == "200") {
+                    if (typeof (onSuccess) == "function") {
+                        onSuccess();
+                    }
+                } else {
+                    if (typeof (onError) == "function") {
+                        onError(data);
+                    }
+                }
+            }, function () {
+                if (typeof (onError) == "function") {
+                    onError.apply(arguments.callee);
+                }
+            });
+        },
+
+        create: function (blueprint, onSuccess, onError) {
+            Gossamer.utils.ajax.put(Genesis.storage.urlFactory.blueprint.getCreateUrl(), blueprint, true, function (data) {
+                if (typeof (data.blueprint) != "undefined" && data.blueprint != null) {
+                    if (typeof (onSuccess) == "function") {
+                        onSuccess(data.blueprint);
+                    }
+                } else {
+                    if (typeof (onError) == "function") {
+                        onError(data.status);
                     }
                 }
             }, function () {
@@ -694,15 +863,15 @@ function GossamerStorage(op) {
         },
 
         getAllSchemas: function (blueprintId, onSuccess, onError) {
-            var url = Gossamer.storage.urlFactory.schema.getSearchAllUrl(blueprintId);
+            var url = Genesis.storage.urlFactory.schema.getSearchAllUrl(blueprintId);
             Gossamer.utils.ajax.get(url, true, function (data) {
-                if (typeof (data.Schemas) != "undefined" && data.Schemas != null) {
+                if (typeof (data.schemas) != "undefined" && data.schemas != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Schemas);
+                        onSuccess(data.schemas);
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError(data.Status);
+                        onError(data.status);
                     }
                 }
             }, function () {
@@ -713,15 +882,15 @@ function GossamerStorage(op) {
         },
 
         getAllRelations: function (blueprintId, onSuccess, onError) {
-            var url = Gossamer.storage.urlFactory.relation.getSearchAllUrl(blueprintId);
+            var url = Genesis.storage.urlFactory.relation.getSearchAllUrl(blueprintId);
             Gossamer.utils.ajax.get(url, true, function (data) {
-                if (typeof (data.Relations) != "undefined" && data.Relations != null) {
+                if (typeof (data.relations) != "undefined" && data.relations != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Relations);
+                        onSuccess(data.relations);
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError(data.Status);
+                        onError(data.status);
                     }
                 }
             }, function () {
@@ -732,15 +901,15 @@ function GossamerStorage(op) {
         },
 
         getAllCannedLists: function (blueprintId, onSuccess, onError) {
-            var url = Gossamer.storage.urlFactory.cannedList.getSearchAllUrl(blueprintId);
+            var url = Genesis.storage.urlFactory.cannedList.getSearchAllUrl(blueprintId);
             Gossamer.utils.ajax.get(url, true, function (data) {
-                if (typeof (data.Lists) != "undefined" && data.Lists != null) {
+                if (typeof (data.lists) != "undefined" && data.lists != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Lists);
+                        onSuccess(data.lists);
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError(data.Status);
+                        onError(data.status);
                     }
                 }
             }, function () {
@@ -752,15 +921,31 @@ function GossamerStorage(op) {
     };
 
     this.deployments = {
+        merge: function (dId, bName, onSuccess, onError) {
+            Gossamer.utils.ajax.post(Genesis.storage.urlFactory.deployment.getMergeUrl(dId, bName), {}, true, function (data) {
+                if (data.status != null && data.status.code == "200") {
+                    if (typeof (onSuccess) == "function") {
+                        onSuccess(data);
+                    }
+                } else {
+                    if (typeof (onError) == "function") {
+                        onError(data.status);
+                    }
+                }
+            }, function () {
+                onError.apply(arguments.callee);
+            }, true);
+        },
+
         get: function (depId, onSuccess, onError) {
-            Gossamer.utils.ajax.get(Gossamer.storage.urlFactory.deployment.getGetUrl(depId), true, function (data) {
-                if (typeof (data.Deployment) != "undefined" && data.Deployment != null && data.Status != null && data.Status.Code == "200") {
+            Gossamer.utils.ajax.get(Genesis.storage.urlFactory.deployment.getGetUrl(depId), true, function (data) {
+                if (typeof (data.Deployment) != "undefined" && data.Deployment != null && data.status != null && data.status.code == "200") {
                     if (typeof (onSuccess) == "function") {
                         onSuccess(data.Deployment);
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError(data.Status);
+                        onError(data.status);
                     }
                 }
             }, function () {
@@ -770,15 +955,31 @@ function GossamerStorage(op) {
             });
         },
 
-        getPublishStatus: function (refId, onSuccess, onError) {
-            Gossamer.utils.ajax.get(Gossamer.storage.urlFactory.deployment.getGetPublishStatusUrl(refId), true, function (data) {
-                if (data.Status != null && data.Status.Code == "200") {
+        exportToBlueprint: function (dId, bName, onSuccess, onError) {
+            Gossamer.utils.ajax.put(Genesis.storage.urlFactory.deployment.getExportUrl(dId, bName), {}, true, function (data) {
+                if (data.status != null && data.status.code == "200") {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Log);
+                        onSuccess(data);
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError(data.Status);
+                        onError(data.status);
+                    }
+                }
+            }, function () {
+                onError.apply(arguments.callee);
+            });
+        },
+
+        getPublishStatus: function (refId, onSuccess, onError) {
+            Gossamer.utils.ajax.get(Genesis.storage.urlFactory.deployment.getGetPublishStatusUrl(refId), true, function (data) {
+                if (data.status != null && data.status.code == "200") {
+                    if (typeof (onSuccess) == "function") {
+                        onSuccess(data.log);
+                    }
+                } else {
+                    if (typeof (onError) == "function") {
+                        onError(data.status);
                     }
                 }
             }, function () {
@@ -789,14 +990,14 @@ function GossamerStorage(op) {
         },
 
         create: function (deployment, onSuccess, onError) {
-            Gossamer.utils.ajax.put(Gossamer.storage.urlFactory.deployment.getCreateUrl(), deployment, true, function (data) {
-                if (typeof (data.DeploymentId) != "undefined" && data.DeploymentId != null && data.Status != null && data.Status.Code == "200") {
+            Gossamer.utils.ajax.put(Genesis.storage.urlFactory.deployment.getCreateUrl(), deployment, true, function (data) {
+                if (typeof (data.DeploymentId) != "undefined" && data.DeploymentId != null && data.status != null && data.status.code == "200") {
                     if (typeof (onSuccess) == "function") {
                         onSuccess(data);
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError(data.Status);
+                        onError(data.status);
                     }
                 }
             }, function () {
@@ -807,15 +1008,15 @@ function GossamerStorage(op) {
         },
 
         searchAll: function (onSuccess, onError) {
-            var url = Gossamer.storage.urlFactory.deployment.getFetchAllDeploymentsUrl();
+            var url = Genesis.storage.urlFactory.deployment.getFetchAllDeploymentsUrl();
             Gossamer.utils.ajax.get(url, true, function (data) {
-                if (typeof (data.Deployments) != "undefined" && data.Deployments != null) {
+                if (typeof (data.deployments) != "undefined" && data.deployments != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Deployments);
+                        onSuccess(data.deployments);
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError(data.Status);
+                        onError(data.status);
                     }
                 }
             }, function () {
@@ -826,15 +1027,15 @@ function GossamerStorage(op) {
         },
 
         getAllSchemas: function (deploymentId, onSuccess, onError) {
-            var url = Gossamer.storage.urlFactory.deployment.getSearchAllSchemaUrl(deploymentId);
+            var url = Genesis.storage.urlFactory.deployment.getSearchAllSchemaUrl(deploymentId);
             Gossamer.utils.ajax.get(url, true, function (data) {
-                if (typeof (data.Schemas) != "undefined" && data.Schemas != null) {
+                if (typeof (data.schemas) != "undefined" && data.schemas != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Schemas);
+                        onSuccess(data.schemas);
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError(data.Status);
+                        onError(data.status);
                     }
                 }
             }, function () {
@@ -845,15 +1046,15 @@ function GossamerStorage(op) {
         },
 
         getAllRelations: function (deploymentId, onSuccess, onError) {
-            var url = Gossamer.storage.urlFactory.deployment.getSearchAllRelationsUrl(deploymentId);
+            var url = Genesis.storage.urlFactory.deployment.getSearchAllRelationsUrl(deploymentId);
             Gossamer.utils.ajax.get(url, true, function (data) {
-                if (typeof (data.Relations) != "undefined" && data.Relations != null) {
+                if (typeof (data.relations) != "undefined" && data.relations != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Relations);
+                        onSuccess(data.relations);
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError(data.Status);
+                        onError(data.status);
                     }
                 }
             }, function () {
@@ -864,15 +1065,15 @@ function GossamerStorage(op) {
         },
 
         getAllCannedLists: function (deploymentId, onSuccess, onError) {
-            var url = Gossamer.storage.urlFactory.deployment.getSearchAllListsUrl(deploymentId);
+            var url = Genesis.storage.urlFactory.deployment.getSearchAllListsUrl(deploymentId);
             Gossamer.utils.ajax.get(url, true, function (data) {
-                if (typeof (data.Lists) != "undefined" && data.Lists != null) {
+                if (typeof (data.lists) != "undefined" && data.lists != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Lists);
+                        onSuccess(data.lists);
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError(data.Status);
+                        onError(data.status);
                     }
                 }
             }, function () {
@@ -886,7 +1087,7 @@ function GossamerStorage(op) {
     var tagsServiceUrl = '/tags.svc';
     this.tags = {
         addTag: function (type, entityId, parentEntityId, tagValue, callback) {
-            Gossamer.utils.ajax.get(Gossamer.storage.urlFactory.tag.getAddTagUrl(type, entityId, parentEntityId, tagValue), true, function (data) {
+            Gossamer.utils.ajax.get(Genesis.storage.urlFactory.tag.getAddTagUrl(type, entityId, parentEntityId, tagValue), true, function (data) {
                 if (typeof (callback) == "function") {
                     callback(data);
                 }
@@ -898,7 +1099,7 @@ function GossamerStorage(op) {
         },
 
         removeTag: function (type, entityId, parentEntityId, tagValue, callback) {
-            Gossamer.utils.ajax.get(Gossamer.storage.urlFactory.tag.getRemoveTagUrl(type, entityId, parentEntityId, tagValue), true, function (data) {
+            Gossamer.utils.ajax.get(Genesis.storage.urlFactory.tag.getRemoveTagUrl(type, entityId, parentEntityId, tagValue), true, function (data) {
                 if (typeof (callback) == "function") {
                     callback(data);
                 }
@@ -912,28 +1113,30 @@ function GossamerStorage(op) {
 
     this.articles = {
         exportArticles: function (id, type) {
-            var url = Gossamer.storage.urlFactory.article.getExportUrl(id, type);
+            var url = Genesis.storage.urlFactory.article.getExportUrl(id, type);
             window.location = url;
         },
-        
+
         queryGraph: function(deploymentId, query, onSuccess, onError) {
-			var url = Gossamer.storage.urlFactory.article.getGraphQueryUrl(deploymentId);
-			Gossamer.utils.ajax.post(url, query, true, function(data) {
-				if (data && data.Status && data.Status.Code && data.Status.Code == '200')
-					onSuccess(data.Projection)
-				else 
-					(onError || function(){})(data)
-			}, function() {
-				(onError || function() {})()
-			})
-		},
-		
-		searchByProperty: function (deploymentId, schemaId, propertyName, propertyValue, pageNumber, onSuccess, onError) {
-            var url = Gossamer.storage.urlFactory.article.getSearchAllUrl(deploymentId, schemaId, ['orderBy=__UtcLastUpdatedDate', 'pnum=' + pageNumber, 'properties=(*' + propertyName + ' like \'' + propertyValue + '\')', 'psize=20']);
+            var url = Genesis.storage.urlFactory.article.getGraphQueryUrl(deploymentId);
+            Gossamer.utils.ajax.post(url, query, true, function(data) {
+                if (data && data.status && data.status.code && data.status.code == '200') {
+                    console.dir(data.projection)
+                    onSuccess(data.projection)
+                }
+                else 
+                    (onError || function(){})(data)
+            }, function() {
+                (onError || function() {})()
+            })
+        },
+
+        searchAll: function (deploymentId, schemaId, query, pageNumber, onSuccess, onError) {
+            var url = Genesis.storage.urlFactory.article.getSearchAllUrl(deploymentId, schemaId, ['orderBy=__UtcLastUpdatedDate', 'pnum=' + pageNumber, 'freetext=' + query]);
             Gossamer.utils.ajax.get(url, true, function (data) {
-                if (typeof (data.Articles) != "undefined" && data.Articles != null) {
+                if (typeof (data.articles) != "undefined" && data.articles != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Articles, data.PagingInfo.TotalRecords);
+                        onSuccess(data.articles, data.paginginfo.totalrecords);
                     }
                 } else {
                     if (typeof (onError) == "function") {
@@ -943,23 +1146,16 @@ function GossamerStorage(op) {
             }, function () {
                 if (typeof (onError) == "function") {
                     onError.apply(arguments.callee);
-                }
+                } 
             });
         },
 
-        searchAll: function (deploymentId, schemaId, query, pageNumber, onSuccess, onError) {
-			var that = this
-			var args = arguments
-			
-            var url = Gossamer.storage.urlFactory.article.getSearchAllUrl(deploymentId, schemaId, ['orderBy=__UtcLastUpdatedDate&isAsc=false', 'pnum=' + pageNumber, 'freetext=' + query, 'psize=20']);
+        searchAllByProperties: function (deploymentId, schemaId, properties, pageNumber, onSuccess, onError, pageSize) {
+            var url = Genesis.storage.urlFactory.article.getSearchAllUrl(deploymentId, schemaId, ['orderBy=__UtcLastUpdatedDate', 'pnum=' + pageNumber, properties], pageSize);
             Gossamer.utils.ajax.get(url, true, function (data) {
-                if (typeof (data.Articles) != "undefined" && data.Articles != null) {
+                if (typeof (data.articles) != "undefined" && data.articles != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Articles, data.PagingInfo.TotalRecords);
-                        if (pageNumber * data.PagingInfo.PageSize >= 5000) return;
-                        if (pageNumber < Math.ceil(data.PagingInfo.TotalRecords / data.PagingInfo.PageSize)) {
-							Gossamer.storage.articles.searchAll(deploymentId, schemaId, query, pageNumber + 1, onSuccess, onError)
-						}
+                        onSuccess(data.articles, data.paginginfo.totalrecords);
                     }
                 } else {
                     if (typeof (onError) == "function") {
@@ -974,8 +1170,8 @@ function GossamerStorage(op) {
         },
 
         deleteArticle: function (deploymentId, articleId, schemaName, onSuccess, onError) {
-            Gossamer.utils.ajax.del(Gossamer.storage.urlFactory.article.getDeleteUrl(deploymentId, articleId, schemaName), true, function (data) {
-                if (typeof (data.Code) != "undefined" && data.Code != null && data.Code == "200") {
+            Gossamer.utils.ajax.del(Genesis.storage.urlFactory.article.getDeleteUrl(deploymentId, articleId, schemaName), true, function (data) {
+                if (typeof (data.code) != "undefined" && data.code != null && data.code == "200") {
                     if (typeof (onSuccess) == "function") {
                         onSuccess(data);
                     }
@@ -992,14 +1188,14 @@ function GossamerStorage(op) {
         },
 
         create: function (deploymentId, schemaName, article, onSuccess, onError) {
-            Gossamer.utils.ajax.put(Gossamer.storage.urlFactory.article.getCreateUrl(deploymentId, schemaName), article, true, function (data) {
-                if (typeof (data.Article) != "undefined" && data.Article != null) {
+            Gossamer.utils.ajax.put(Genesis.storage.urlFactory.article.getCreateUrl(deploymentId, schemaName), article, true, function (data) {
+                if (typeof (data.article) != "undefined" && data.article != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Article);
+                        onSuccess(data.article);
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError(data.Status);
+                        onError(data.status);
                     }
                 }
             }, function () {
@@ -1009,15 +1205,15 @@ function GossamerStorage(op) {
             });
         },
 
-        update: function (deploymentId, schemaName, articleId, updateCommand, onSuccess, onError) {
-            Gossamer.utils.ajax.post(Gossamer.storage.urlFactory.article.getUpdateUrl(deploymentId, schemaName, articleId), updateCommand, true, function (data) {
-                if (typeof (data.Article) != "undefined" && data.Article != null) {
+        update: function (deploymentId, article, onSuccess, onError) {
+            Gossamer.utils.ajax.post(Genesis.storage.urlFactory.article.getUpdateUrl(deploymentId, article.__id), article, true, function (data) {
+                if (typeof (data.article) != "undefined" && data.article != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Article);
+                        onSuccess(data.article);
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError(data.Status);
+                        onError(data.status);
                     }
                 }
             }, function () {
@@ -1028,14 +1224,14 @@ function GossamerStorage(op) {
         },
 
         get: function (deploymentId, schemaId, articleId, onSuccess, onError) {
-            Gossamer.utils.ajax.get(Gossamer.storage.urlFactory.article.getGetUrl(deploymentId, schemaId, articleId), true, function (data) {
-                if (typeof (data.Article) != "undefined" && data.Article != null) {
+            Gossamer.utils.ajax.get(Genesis.storage.urlFactory.article.getGetUrl(deploymentId, schemaId, articleId), true, function (data) {
+                if (typeof (data.article) != "undefined" && data.article != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Article);
+                        onSuccess(data.article);
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError.apply(arguments[0].Status);
+                        onError.apply(arguments[0].status);
                     }
                 }
             }, function () {
@@ -1045,14 +1241,14 @@ function GossamerStorage(op) {
             });
         },
         multiGet: function (deploymentId, schemaId, articleIds, onSuccess, onError) {
-            Gossamer.utils.ajax.get(Gossamer.storage.urlFactory.article.getMultiGetUrl(deploymentId, schemaId, articleIds), true, function (data) {
-                if (typeof (data.Articles) != "undefined" && data.Articles != null) {
+            Gossamer.utils.ajax.get(Genesis.storage.urlFactory.article.getMultiGetUrl(deploymentId, schemaId, articleIds), true, function (data) {
+                if (typeof (data.articles) != "undefined" && data.articles != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Articles);
+                        onSuccess(data.articles);
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError.apply(arguments[0].Status);
+                        onError.apply(arguments[0].status);
                     }
                 }
             }, function () {
@@ -1072,14 +1268,14 @@ function GossamerStorage(op) {
             }
             query += ')';
 
-            Gossamer.utils.ajax.get(Gossamer.storage.urlFactory.article.getPropertiesSearchUrl(deploymentId, schemaName, query), isAsync, function (data) {
-                if (typeof (data.Articles) != "undefined" && data.Articles != null) {
+            Gossamer.utils.ajax.get(Genesis.storage.urlFactory.article.getPropertiesSearchUrl(deploymentId, schemaName, query), isAsync, function (data) {
+                if (typeof (data.articles) != "undefined" && data.articles != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Articles);
+                        onSuccess(data.articles);
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError.apply(arguments[0].Status);
+                        onError.apply(arguments[0].status);
                     }
                 }
             }, function () {
@@ -1092,7 +1288,7 @@ function GossamerStorage(op) {
 
     this.connections = {
         searchByArticle: function (deploymentId, relationId, articleId, label, onSuccess, onError) {
-            var url = Gossamer.storage.urlFactory.connection.getSearchByArticleUrl(deploymentId, relationId, articleId, label, ['orderBy=__UtcLastUpdatedDate', 'pnum=1']);
+            var url = Genesis.storage.urlFactory.connection.getSearchByArticleUrl(deploymentId, relationId, articleId, label, ['orderBy=__UtcLastUpdatedDate', 'pnum=1']);
             Gossamer.utils.ajax.get(url, true, function (data) {
                 if (typeof (data.Connections) != "undefined" && data.Connections != null) {
                     if (typeof (onSuccess) == "function") {
@@ -1110,7 +1306,7 @@ function GossamerStorage(op) {
             });
         },
         create: function (deploymentId, relationId, connection, onSuccess, onError) {
-            var url = Gossamer.storage.urlFactory.connection.getCreateUrl(deploymentId, relationId);
+            var url = Genesis.storage.urlFactory.connection.getCreateUrl(deploymentId, relationId);
             Gossamer.utils.ajax.put(url, connection, true, function (data) {
                 if (typeof (data.Connection) != "undefined" && data.Connection != null) {
                     if (typeof (onSuccess) == "function") {
@@ -1118,7 +1314,7 @@ function GossamerStorage(op) {
                     }
                 } else {
                     if (typeof (onError) == "function") {
-                        onError(data.Status);
+                        onError(data.status);
                     }
                 }
             }, function () {
@@ -1128,9 +1324,9 @@ function GossamerStorage(op) {
             });
         },
         deleteConnection: function (deploymentId, relationId, connectionId, onSuccess, onError) {
-            var url = Gossamer.storage.urlFactory.connection.getDeleteUrl(deploymentId, relationId, connectionId);
+            var url = Genesis.storage.urlFactory.connection.getDeleteUrl(deploymentId, relationId, connectionId);
             Gossamer.utils.ajax.del(url, true, function (data) {
-                if (typeof (data.Code) != "undefined" && data.Code != null && data.Code == "200") {
+                if (typeof (data.code) != "undefined" && data.code != null && data.code == "200") {
                     if (typeof (onSuccess) == "function") {
                         onSuccess(data);
                     }
@@ -1148,5 +1344,7 @@ function GossamerStorage(op) {
     };
 }
 
-if (!window.Gossamer) window.Gossamer = {};
-if (!Gossamer.storage) Gossamer.storage = new GossamerStorage();
+if (!window.Genesis) window.Genesis = {};
+if (!Genesis.storage) Genesis.storage = new GossamerStorage();
+
+// if (Genesis.services) Genesis.services.authenticationService.setEnvironmentData();

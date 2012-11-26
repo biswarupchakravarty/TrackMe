@@ -1,29 +1,71 @@
 function UrlFactory() {
-
-	var gossamerUrl = 'http://apis.appacitive.com/v0.9/Core';
-
+    var baseUrl = 'http://apis.appacitive.com/v0.9/core';
     this.session = {
 
-        sessionServiceUrl: '/account.svc',
+        sessionServiceUrl: baseUrl + '/sessionservice.svc',
 
         getCreateSessionUrl: function (deploymentName) {
-            return String.format(gossamerUrl + "{0}/session", this.sessionServiceUrl);
+            return String.format("{0}/create?deploymentName={1}", this.sessionServiceUrl, deploymentName);
         },
-
+        getPingSessionUrl: function () {
+            return String.format("{0}/ping", this.sessionServiceUrl);
+        },
+        getValidateTokenUrl: function (token) {
+            return String.format("{0}/validatetoken?token={1}", this.sessionServiceUrl, token);
+        },
         getDeleteSessionUrl: function (deploymentName) {
             return String.format("{0}/delete?deploymentName={1}", this.sessionServiceUrl, deploymentName);
         }
     };
+    this.application = {
 
+        applicationServiceUrl: baseUrl + '/application.svc/v2/',
+
+        getSearchAllUrl: function (queryParams) {
+            var url = String.format('{0}/find/{1}/all', this.applicationServiceUrl, Genesis.bag.accountName);
+
+            if (typeof (queryParams) !== 'undefined' && queryParams.length > 0) {
+                for (var i = 0; i < queryParams.length; i = i + 1) {
+                    if (queryParams[i].trim().length > 0) {
+                        url = url + "&" + queryParams[i];
+                    }
+                }
+            }
+
+            return url;
+        },
+
+        getCreateUrl: function () {
+            return String.format('{0}/create', this.applicationServiceUrl);
+        },
+        getCreateSessionUrl: function () {
+            return String.format('{0}/session', this.applicationServiceUrl);
+        },
+        getDeleteUrl: function (applicationId) {
+            return String.format('{0}/{1}', this.applicationServiceUrl, applicationId);
+        },
+        getCheckNameUrl: function (name) {
+            return String.format('{0}/doesNameExist/{1}/{2}', this.applicationServiceUrl, Genesis.bag.accountName, name);
+        },
+        getHasAppUrl: function () {
+            return String.format('{0}/hasApp', this.applicationServiceUrl);
+        },
+        getGetPublishStatusUrl: function (refId) {
+            return String.format('{0}/status/{1}', this.applicationServiceUrl, refId);
+        },
+        getGetUrl: function (name) {
+            return String.format('{0}/{1}', this.applicationServiceUrl, name);
+        }
+    };
     this.article = {
-        articleServiceUrl: gossamerUrl + '/article.svc',
+        articleServiceUrl: baseUrl + '/articleservice.svc',
 
         getExportUrl: function (id, type) {
             return 'Articles.exp?ctype=Article&blueprintid=' + id + '&type=' + type;
         },
 
         getEntityId: function () {
-            return Gossamer.bag.selectedCatalog.Id;
+            return Genesis.bag.selectedCatalog.id;
         },
         getGetUrl: function (deploymentId, schemaId, articleId) {
             return String.format('{0}/{1}/{2}/{3}', this.articleServiceUrl, deploymentId, schemaId, articleId);
@@ -37,15 +79,20 @@ function UrlFactory() {
         getBlobUpdateUrl: function () {
             return String.format('{0}/blob/update?deploymentid={1}', this.articleServiceUrl, this.getEntityId());
         },
+        getGraphQueryUrl: function(deploymentId) {
+            return String.format('{0}/Search.svc/{1}/project', baseUrl, deploymentId);
+        },
 
         getSearchAllUrl: function (deploymentId, schemaId, queryParams) {
             var url = '';
 
-            url = String.format('{0}/{1}/{2}/find/all?', this.articleServiceUrl, deploymentId, schemaId);
+            url = String.format('{0}/search/{1}/{2}/all', this.articleServiceUrl, deploymentId, schemaId);
 
+            url = url + '?psize=10';
             if (typeof (queryParams) !== 'undefined' && queryParams.length > 0) {
                 for (var i = 0; i < queryParams.length; i = i + 1) {
-                    url = url + (i == 0 ? '' : '&') + queryParams[i];
+                    if (queryParams[i].trim().length == 0) continue;
+                    url = url + "&" + queryParams[i];
                 }
             }
             return url;
@@ -57,28 +104,24 @@ function UrlFactory() {
             return url;
         },
         getDeleteUrl: function (deploymentId, articleId, schemaName) {
-            return String.format('{0}/{1}/{2}/{3}', this.articleServiceUrl, deploymentId, schemaName, articleId);
+            return String.format('{0}/delete/{1}/{2}/{3}', this.articleServiceUrl, deploymentId, articleId, schemaName);
         },
-        getCreateUrl: function (deploymentId, schemaName) {
-            return String.format('{0}/{1}/{2}', this.articleServiceUrl, deploymentId, schemaName);
+        getCreateUrl: function (deploymentId) {
+            return String.format('{0}/create/{1}', this.articleServiceUrl, deploymentId);
         },
-        getUpdateUrl: function (deploymentId, schemaName, articleId) {
-            return String.format('{0}/{1}/{2}/{3}', this.articleServiceUrl, deploymentId, schemaName, articleId);
-        },
-        
-        getGraphQueryUrl: function(deploymentId) {
-			return String.format('{0}/Search.svc/{1}/project', gossamerUrl, deploymentId);
-		}
+        getUpdateUrl: function (deploymentId, articleId) {
+            return String.format('{0}/update/{1}/{2}', this.articleServiceUrl, deploymentId, articleId);
+        }
     };
 
     this.connection = {
-        connectionServiceUrl: gossamerUrl + '/connection.svc',
+        connectionServiceUrl: baseUrl + '/connectionservice.svc',
 
         getEntityId: function () {
-            return Gossamer.bag.selectedCatalog.Id;
+            return Genesis.bag.selectedCatalog.id;
         },
         getCreateUrl: function (deploymentId, relationId) {
-            return String.format('{0}/{1}/{2}', this.connectionServiceUrl, deploymentId, relationId);
+            return String.format('{0}/create/{1}/{2}', this.connectionServiceUrl, deploymentId, relationId);
         },
         getDeleteUrl: function (deploymentId, relationId, connectionId) {
             return String.format('{0}/{1}/{2}/{3}', this.connectionServiceUrl, deploymentId, relationId, connectionId);
@@ -100,14 +143,14 @@ function UrlFactory() {
 
     this.schema = {
 
-        schemaServiceUrl: '/schema.svc',
+        schemaServiceUrl: baseUrl + '/schemaservice.svc',
 
         //Return  blueprint Id or deployments blueprint Id
         getEntityId: function () {
-            if (Gossamer.bag.selectedType == 'deployment') {
-                return Gossamer.bag.selectedCatalog.BlueprintId;
+            if (Genesis.bag.selectedType == 'deployment') {
+                return Genesis.bag.selectedCatalog.blueprintid;
             }
-            return Gossamer.bag.selectedCatalog.Id;
+            return Genesis.bag.selectedCatalog.id;
         },
 
         getExportUrl: function (id) {
@@ -131,7 +174,7 @@ function UrlFactory() {
         },
 
         getGetPropertiesUrl: function (schemaId) {
-            return String.format('{0}/get/{1}/{2}', this.schemaServiceUrl, this.getEntityId(), schemaId);
+            return String.format('{0}/get/{1}/{2}/true', this.schemaServiceUrl, this.getEntityId(), schemaId);
         },
 
         getCreateUrl: function () {
@@ -163,21 +206,21 @@ function UrlFactory() {
         },
 
         getGetUrl: function (schemaId) {
-            var eId = Gossamer.bag.selectedType == 'blueprint' ? Gossamer.bag.selectedCatalog.Id : Gossamer.bag.selectedCatalog.BlueprintId;
+            var eId = Genesis.bag.selectedType == 'blueprint' ? Genesis.bag.selectedCatalog.Id : Genesis.bag.selectedCatalog.BlueprintId;
             return String.format('{0}/get/{1}/{2}', this.schemaServiceUrl, eId, schemaId);
         }
     };
 
     this.relation = {
 
-        relationServiceUrl: '/relation.svc',
+        relationServiceUrl: baseUrl + '/relationservice.svc',
 
         //Return  blueprint Id or deployments blueprint Id
         getEntityId: function () {
-            if (Gossamer.bag.selectedType == 'deployment') {
-                return Gossamer.bag.selectedCatalog.BlueprintId;
+            if (Genesis.bag.selectedType == 'deployment') {
+                return Genesis.bag.selectedCatalog.blueprintid;
             }
-            return Gossamer.bag.selectedCatalog.Id;
+            return Genesis.bag.selectedCatalog.id;
         },
 
         getExportUrl: function (id) {
@@ -211,7 +254,7 @@ function UrlFactory() {
         },
 
         getGetPropertiesUrl: function (relationId) {
-            return String.format('{0}/get/{1}/{2}', this.relationServiceUrl, this.getEntityId(), relationId);
+            return String.format('{0}/get/{1}/{2}/true', this.relationServiceUrl, this.getEntityId(), relationId);
         },
 
         getCreateUrl: function () {
@@ -247,21 +290,21 @@ function UrlFactory() {
         },
 
         getGetUrl: function (relationId) {
-            var eId = Gossamer.bag.selectedType == 'blueprint' ? Gossamer.bag.selectedCatalog.Id : Gossamer.bag.selectedCatalog.BlueprintId;
+            var eId = Genesis.bag.selectedType == 'blueprint' ? Genesis.bag.selectedCatalog.Id : Genesis.bag.selectedCatalog.BlueprintId;
             return String.format('{0}/get/{1}/{2}', this.relationServiceUrl, eId, relationId);
         }
     };
 
     this.cannedList = {
 
-        cannedListServiceUrl: '/list.svc',
+        cannedListServiceUrl: baseUrl + '/listservice.svc',
 
         //Return  blueprint Id or deployments blueprint Id
         getEntityId: function () {
-            if (Gossamer.bag.selectedType == 'deployment') {
-                return Gossamer.bag.selectedCatalog.BlueprintId;
+            if (Genesis.bag.selectedType == 'deployment') {
+                return Genesis.bag.selectedCatalog.blueprintid;
             }
-            return Gossamer.bag.selectedCatalog.Id;
+            return Genesis.bag.selectedCatalog.id;
         },
 
         getExportUrl: function (id) {
@@ -331,7 +374,7 @@ function UrlFactory() {
         },
 
         getGetUrl: function (relationId) {
-            var eId = Gossamer.bag.selectedType == 'blueprint' ? Gossamer.bag.selectedCatalog.Id : Gossamer.bag.selectedCatalog.BlueprintId;
+            var eId = Genesis.bag.selectedType == 'blueprint' ? Genesis.bag.selectedCatalog.Id : Genesis.bag.selectedCatalog.BlueprintId;
             return String.format('{0}/get/{1}/{2}', this.cannedListServiceUrl, eId, relationId);
         }
 
@@ -339,7 +382,7 @@ function UrlFactory() {
 
     this.catalog = {
 
-        catalogServiceUrl: '/blueprint.svc',
+        catalogServiceUrl: baseUrl + '/blueprintservice.svc',
 
         getSearchAllUrl: function (queryParams) {
             var url = String.format('{0}/find/all?', this.catalogServiceUrl);
@@ -355,7 +398,15 @@ function UrlFactory() {
 
     this.blueprint = {
 
-        blueprintServiceUrl: '/blueprint.svc',
+        blueprintServiceUrl: baseUrl + '/blueprintservice.svc',
+
+        getGetUrl: function (id) {
+            return String.format('{0}/get/{1}', this.blueprintServiceUrl, id);
+        },
+
+        getDeleteUrl: function (id) {
+            return String.format('{0}/delete/{1}', this.blueprintServiceUrl, id);
+        },
 
         getCreateUrl: function () {
             return String.format('{0}/create', this.blueprintServiceUrl);
@@ -369,7 +420,7 @@ function UrlFactory() {
 
         getRelationsUrl: function (bId) {
             var url = String.format('{0}/{1}/contents/relations?', this.blueprintServiceUrl, bId);
-            url = url + '?psize=10';
+            url = url + '?psize=1000';
             return url;
         },
 
@@ -382,7 +433,7 @@ function UrlFactory() {
 
     this.deployment = {
 
-        deploymentServiceUrl: '/deployment.svc',
+        deploymentServiceUrl: baseUrl + '/deploymentservice.svc',
 
         getGetUrl: function (id) {
             return String.format('{0}/get/{1}', this.deploymentServiceUrl, id);
@@ -398,7 +449,6 @@ function UrlFactory() {
 
         getFetchAllDeploymentsUrl: function () {
             var url = String.format('{0}/fetchAll', this.deploymentServiceUrl);
-            url = url + '?psize=1000';
             return url;
         },
 
@@ -418,19 +468,29 @@ function UrlFactory() {
             var url = String.format('{0}/getLists/{1}', this.deploymentServiceUrl, dId);
             url = url + '?psize=1000';
             return url;
+        },
+
+        getExportUrl: function (dId, bName) {
+            var url = String.format('{0}/{1}/{2}', this.deploymentServiceUrl, dId, bName);
+            return url;
+        },
+
+        getMergeUrl: function (dId, bName) {
+            var url = String.format('{0}/{1}/{2}', this.deploymentServiceUrl, dId, bName);
+            return url;
         }
     };
 
     this.tag = {
 
-        tagServiceUrl: '/tags.svc',
+        tagServiceUrl: baseUrl + '/tagsservice.svc',
 
         //Return  blueprint Id or deployments blueprint Id
         getEntityId: function () {
-            if (Gossamer.selectedType == 'deployment') {
-                return Gossamer.bag.selectedCatalog.BlueprintId;
+            if (Genesis.selectedType == 'deployment') {
+                return Genesis.bag.selectedCatalog.blueprintid;
             }
-            return Gossamer.bag.selectedCatalog.Id;
+            return Genesis.bag.selectedCatalog.id;
         },
 
         getAddTagUrl: function (type, entityId, parentEntityId, tagValue) {
@@ -442,16 +502,75 @@ function UrlFactory() {
         }
     };
 
-    this.account = {
-        accountServiceUrl: '/account.svc',
+    this.invoice = {
+        invoiceServiceUrl: baseUrl + '/invoiceservice.svc',
 
-        getCreateNewAccountUrl: function () {
-            return this.accountServiceUrl + '/create';
+        getUsageStatsUrl: function() {
+            //
+            return this.invoiceServiceUrl + '/usage/' + Genesis.bag.accountName + '/' + Genesis.bag.apps.selected.name
+        }
+    };
+
+    this.account = {
+        accountServiceUrl: baseUrl + '/accountservice.svc',
+
+        getCreateNewAccountUrl: function (queryParam) {
+            return String.format("{0}/createaccount?skipValid={1}", this.accountServiceUrl, queryParam);
         },
 
         getAccountIdUrl: function (accName) {
             return this.accountServiceUrl + '/accountId/' + accName;
+        },
+        checkAccountNameUrl: function (accName) {
+            return this.accountServiceUrl + '/exists/' + accName;
+        },
+        createInvite: function (token) {
+            return String.format("{0}/createInvite?args={1}", this.accountServiceUrl, token);
+        },
+        checkToken: function (token, queryParam) {
+            return String.format("{0}/searchToken/{1}?skipValid={2}", this.accountServiceUrl, token, queryParam);
+        },
+        isHuman: function (challenge, userResponse) {
+            return this.accountServiceUrl + '/captcha/' + challenge + '/' + userResponse;
         }
     };
+    this.query = {
+        params: function (key) {
+            var match = [];
+            if (location.search == "" || location.search.indexOf("?") == -1) return match;
+            if (!key) return location.search.split("?")[1].split("=");
+            else {
+                key = key.toLowerCase();
+                var splitQuery = location.search.split("?")[1].split("&");
+                $.each(splitQuery, function (i, k) {
+                    var splitKey = k.split("=");
+                    var value = splitKey[1];
+                    if (splitKey.length > 2) {
+                        $.each(splitKey, function (ii, kk) {
+                            if (ii == 0 || ii == 1) return;
+                            value = value + "=" + splitKey[ii];
+                        });
+                    }
+                    if (splitKey[0].toLowerCase() == key) match = [splitKey[0], value];
+                });
+                return match;
+            }
+        }
+    };
+    //TODO: Is it required
+//    this.userAccount = {
+//        accountServiceUrl: baseUrl + '/account.svc',
 
+//        getUpdateUrl: function () {
+//            return this.accountServiceUrl + '/update?token=' + Genesis.services.authenticationService.getUserSessionToken();
+//        }
+//    }
+
+    this.graphite = {
+        graphiteBaseUrl: baseUrl + '/sessionservice.svc/getGraph',
+
+        getBaseUrl: function () {
+            return this.graphiteBaseUrl;
+        }
+    };
 }

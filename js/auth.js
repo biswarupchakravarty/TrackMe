@@ -26,17 +26,18 @@ Gossamer.authentication = new (function() {
 			return
 		}
 		
-		apikey = apikey || 'kHfGM9t2OdT1i7EEuQsLqO0Po16KMowftXqCnYlLY54=';
+		apikey = apikey || 'KzmgKrafja9/HjtlMKbd3jkIQZADmTDLf0tlrlenvoU=';
 		var request = {
-			ApiKey: apikey,
-			IsNonSliding: false,
-			UsageCount: -1,
-			WindowTime: 240
+			apikey: apikey,
+			isnonsliding: false,
+			usagecount: -1,
+			windowtime: 240
 		};
-		var url = Gossamer.storage.urlFactory.session.getCreateSessionUrl();
+		var url = Genesis.storage.urlFactory.application.getCreateSessionUrl();
 		Gossamer.utils.ajax.put(url, request, false, function(data) {
-			if (data.Session && data.Session.SessionKey) {
-				sessionId = data.Session.SessionKey;
+			if (data.session && data.session.sessionkey) {
+				sessionId = data.session.sessionkey;
+				console.log('got session from server')
 				$.cookie('sessionkey',sessionId)
 			}
 		}, function() {
@@ -48,4 +49,4 @@ Gossamer.authentication = new (function() {
 
 var apiKey = 'KzmgKrafja9/HjtlMKbd3jkIQZADmTDLf0tlrlenvoU='
 Gossamer.authentication.getSession(apiKey)
-window.deploymentId = '2047637487485349'
+window.deploymentId = 'health'
