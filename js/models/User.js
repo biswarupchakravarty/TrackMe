@@ -12,7 +12,6 @@ Gossamer.models.User = function(id, onLoaded) {
 	var cache = {}
 	
 	var translate = function(article) {
-		if (!article.__Properties || article.__Properties.length == 0) return
 		if (article.__attributes) {
 			for (var attr in article.__attributes) {
 				this[attr] = article.__attributes.attr
@@ -36,15 +35,15 @@ Gossamer.models.User = function(id, onLoaded) {
 	}
 	
 	var parseGraphQuery = function(projection) {
-		var user = projection.Nodes[0]
-		for (var x=0;x < user.Projections.length;x=x+1) {
-			var p = user.Projections[x]
-			base[p.Name] = []
-			if (!p.Nodes || p.Nodes.length == 0) continue;
-			p.Nodes.forEach(function(node) {
+		var user = projection.nodes[0]
+		for (var x=0;x < user.projections.length;x=x+1) {
+			var p = user.projections[x]
+			base[p.name] = []
+			if (!p.nodes || p.nodes.length == 0) continue;
+			p.nodes.forEach(function(node) {
 				var newNode = {}
-				translate.apply(newNode, [node.Article])
-				base[p.Name].push(newNode)
+				translate.apply(newNode, [node.article])
+				base[p.name].push(newNode)
 			})
 		}
 		
@@ -112,20 +111,23 @@ Gossamer.models.User = function(id, onLoaded) {
 	
 	var queryUserGraph = function() {
 		var query = {
-			"Children": [],
-			"Input": [userId],
-			"Name": "Patients",
-			"Type": "User"
+			"children": [],
+			"input": [userId],
+			"name": "Patients",
+			"type": "User",
+			"properties": null
 		};
 		
 		['Event','Statistics','Family_History','EventStatistics','EventFile'].forEach(function(relation) {
-			query.Children.push({
-				"Edge": relation,
-				"Name": relation
+			query.children.push({
+				"edge": relation,
+				"name": relation,
+				"properties": null
 			})
 		})
 		
 		Genesis.storage.articles.queryGraph(deploymentId, query, function(projection) {
+			console.dir(projection)
 			parseGraphQuery(projection)
 		}, function() {
 			alert('graph query bugged out.')

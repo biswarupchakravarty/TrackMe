@@ -487,7 +487,7 @@ $(function () {
 	window.userIds = []
 	
 	// populate the user list
-	Genesis.storage.articles.searchAll(deploymentId, 'User', '', 1, function(articles) {
+	Genesis.storage.articles.searchAll(deploymentId, 'Userschema', '', 1, function(articles) {
 		
 		// keep track for cleanup acivities
 		articles.forEach(function(article) {
@@ -496,7 +496,7 @@ $(function () {
 		
 		// the actual refresh script
 		var refreshAlerts = function(userId) {
-			Genesis.storage.articles.get('health','user',userId,function(article) {
+			Genesis.storage.articles.get('health','userschema',userId,function(article) {
 				var alertCount = 0
 				for (var attr in article.__attributes) {
 					if (attr == 'alerts') {

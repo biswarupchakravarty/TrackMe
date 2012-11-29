@@ -21,13 +21,18 @@ Depends on	jQuery
 			}
 		}
 
+        var _beforeSend = function(xhr) {
+            xhr.setRequestHeader('appacitive-session', Gossamer.authentication.getSessionId());
+            xhr.setRequestHeader('appacitive-environment', 'live');
+        }
+
         this.get = function (url, async, onSuccess, onError) {
-			if (url.indexOf('ccount.svc/create') == -1) url = appendSessionId(url);
             onError = onError || function () { };
             $.ajax({
                 url: url,
                 type: 'GET',
                 async: async,
+                beforeSend: _beforeSend,
                 success: function (data) {
                     if (window.Gossamer.utils.ajax.checkStatus(data)) {
                         onSuccess(data) || function () { }
@@ -44,9 +49,10 @@ Depends on	jQuery
         this.post = function (url, data, async, onSuccess, onError) {
             onError = onError || function () { };
             $.ajax({
-                url: appendSessionId(url),
+                url: url,
                 type: 'POST',
                 async: async,
+                beforeSend: _beforeSend,
                 contentType: "application/json",
                 data: JSON.stringify(data),
                 success: function (data) {
@@ -64,10 +70,11 @@ Depends on	jQuery
 
         this.put = function (url, data, async, onSuccess, onError, ignoreStatus) {
             $.ajax({
-                url: appendSessionId(url),
+                url: url,
                 type: 'PUT',
                 async: async,
                 data: JSON.stringify(data),
+                beforeSend: _beforeSend,
                 contentType: "application/json",
                 success: function (data) {
                     if (ignoreStatus) {
@@ -86,9 +93,10 @@ Depends on	jQuery
         this.del = function (url, async, onSuccess, onError, ignoreStatus) {
             onError = onError || function () { };
             $.ajax({
-                url: appendSessionId(url),
+                url: url,
                 type: 'DELETE',
                 async: async,
+                beforeSend: _beforeSend,
                 success: function (data) {
                     if (ignoreStatus) {
                         data.ignoreStatus = true;

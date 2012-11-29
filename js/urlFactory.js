@@ -58,7 +58,7 @@ function UrlFactory() {
         }
     };
     this.article = {
-        articleServiceUrl: baseUrl + '/articleservice.svc',
+        articleServiceUrl: baseUrl + '/article.svc/v2/',
 
         getExportUrl: function (id, type) {
             return 'Articles.exp?ctype=Article&blueprintid=' + id + '&type=' + type;
@@ -68,7 +68,7 @@ function UrlFactory() {
             return Genesis.bag.selectedCatalog.id;
         },
         getGetUrl: function (deploymentId, schemaId, articleId) {
-            return String.format('{0}/{1}/{2}/{3}', this.articleServiceUrl, deploymentId, schemaId, articleId);
+            return String.format('{0}/{1}/{2}', this.articleServiceUrl, schemaId, articleId);
         },
         getMultiGetUrl: function (deploymentId, schemaId, articleIds) {
             return String.format('{0}/multiGet/{1}/{2}/{3}', this.articleServiceUrl, deploymentId, schemaId, articleIds);
@@ -86,9 +86,9 @@ function UrlFactory() {
         getSearchAllUrl: function (deploymentId, schemaId, queryParams) {
             var url = '';
 
-            url = String.format('{0}/search/{1}/{2}/all', this.articleServiceUrl, deploymentId, schemaId);
+            url = String.format('{0}/{1}/find/all', this.articleServiceUrl, schemaId);
 
-            url = url + '?psize=10';
+            url = url + '?psize=100';
             if (typeof (queryParams) !== 'undefined' && queryParams.length > 0) {
                 for (var i = 0; i < queryParams.length; i = i + 1) {
                     if (queryParams[i].trim().length == 0) continue;
