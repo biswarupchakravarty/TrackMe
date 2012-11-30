@@ -484,10 +484,11 @@ $(function () {
 						})
 					}
 				}
+				// TODO: enable once handlers start working
 				if (alertCount != 0) {
-					$('#divAlerts' + userId).html(alertCount).show()
+					// $('#divAlerts' + userId).html(alertCount).show()
 				} else {
-					$('#divAlerts' + userId).hide()
+					// $('#divAlerts' + userId).hide()
 				}
 			})
 		}
@@ -497,7 +498,7 @@ $(function () {
 		var attachRefreshScript = function(userId) {
 			window.refreshHandles.push(setInterval(function() {
 				refreshAlerts(userId)
-			}, 300000))
+			}, 10000))
 		}
 		
 		
