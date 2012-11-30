@@ -504,8 +504,10 @@ $(function () {
 		var users = articles.map(function(article) {
 			
 			var userName = article.name
-			var photos = article.photograph
 			
+			// TODO: remove this when photos are possible again
+			delete article.photograph
+
 			var user = {userName: userName, userId: article.__id}
 			
 			if (article.photograph) 

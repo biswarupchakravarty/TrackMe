@@ -80,6 +80,10 @@ Gossamer.models.User = function(id, onLoaded) {
 		if (base.Photograph)
 			base.Photograph += '?session=' + Gossamer.authentication.getSessionId()
 		
+		// TODO: remove when images start working
+		delete base.Photograph
+		delete base.photograph
+
 		base.Statistics = base.__projections[1].Statistics;
 		// sort the Statistics
 		base.Statistics.sort(function(a, b) {
