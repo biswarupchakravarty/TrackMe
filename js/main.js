@@ -506,7 +506,7 @@ $(function () {
 			var userName = article.name
 			
 			// TODO: remove this when photos are possible again
-			delete article.photograph
+			//delete article.photograph
 
 			var user = {userName: userName, userId: article.__id}
 			
