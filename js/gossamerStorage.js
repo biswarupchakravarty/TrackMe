@@ -1308,9 +1308,9 @@ function GossamerStorage(op) {
         create: function (deploymentId, relationId, connection, onSuccess, onError) {
             var url = Genesis.storage.urlFactory.connection.getCreateUrl(deploymentId, relationId);
             Gossamer.utils.ajax.put(url, connection, true, function (data) {
-                if (typeof (data.Connection) != "undefined" && data.Connection != null) {
+                if (typeof (data.connection) != "undefined" && data.connection != null) {
                     if (typeof (onSuccess) == "function") {
-                        onSuccess(data.Connection);
+                        onSuccess(data.connection);
                     }
                 } else {
                     if (typeof (onError) == "function") {

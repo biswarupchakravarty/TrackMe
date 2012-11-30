@@ -106,8 +106,8 @@ function UrlFactory() {
         getDeleteUrl: function (deploymentId, articleId, schemaName) {
             return String.format('{0}/delete/{1}/{2}/{3}', this.articleServiceUrl, deploymentId, articleId, schemaName);
         },
-        getCreateUrl: function (deploymentId) {
-            return String.format('{0}/create/{1}', this.articleServiceUrl, deploymentId);
+        getCreateUrl: function (deploymentId, schemaName) {
+            return String.format('{0}{1}', this.articleServiceUrl, schemaName);
         },
         getUpdateUrl: function (deploymentId, articleId) {
             return String.format('{0}/update/{1}/{2}', this.articleServiceUrl, deploymentId, articleId);
@@ -115,13 +115,13 @@ function UrlFactory() {
     };
 
     this.connection = {
-        connectionServiceUrl: baseUrl + '/connectionservice.svc',
+        connectionServiceUrl: baseUrl + '/connection.svc',
 
         getEntityId: function () {
             return Genesis.bag.selectedCatalog.id;
         },
         getCreateUrl: function (deploymentId, relationId) {
-            return String.format('{0}/create/{1}/{2}', this.connectionServiceUrl, deploymentId, relationId);
+            return String.format('{0}/{1}', this.connectionServiceUrl, relationId);
         },
         getDeleteUrl: function (deploymentId, relationId, connectionId) {
             return String.format('{0}/{1}/{2}/{3}', this.connectionServiceUrl, deploymentId, relationId, connectionId);

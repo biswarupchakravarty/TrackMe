@@ -26,6 +26,21 @@ Depends on	jQuery
             xhr.setRequestHeader('appacitive-environment', 'live');
         }
 
+        this.getImage = function (url, onSuccess) {
+            $.ajax({
+                url: url,
+                type: 'GET',
+                async: true,
+                beforeSend: _beforeSend,
+                success: function (data) {
+                    (onSuccess || function(){})(data);
+                },
+                error: function () {
+                    
+                }
+            });
+        };
+
         this.get = function (url, async, onSuccess, onError) {
             onError = onError || function () { };
             $.ajax({
@@ -35,7 +50,7 @@ Depends on	jQuery
                 beforeSend: _beforeSend,
                 success: function (data) {
                     if (window.Gossamer.utils.ajax.checkStatus(data)) {
-                        onSuccess(data) || function () { }
+                        (onSuccess || function(){})(data);
                     }
                 },
                 error: function () {

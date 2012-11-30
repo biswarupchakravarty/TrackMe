@@ -277,53 +277,41 @@ var displayUser = function(id) {
 		var btn = $(this)
 		
 		btn.button('loading')
+
 		var article = {
-			"__CreatedBy": "Strento",
-			"__Properties": [
+			"type": $('#slctStatsType > option:selected').val(),
+			"value": $('#txtStatsValue').val(),
+			"date": $('#txtStatsDate').val(),
+			"time": $('#txtStatsTime').val(),
+			"notes": $('#txtStatsNotes').val(),
+			"__schematype": "Statistics",
+			"__createdby": "appacitive",
+			"__attributes": [
 				{
-					"Key": "Type",
-					"Value": $('#slctStatsType > option:selected').val()
+					"key": "userId",
+					"value": window.userId
 				},
 				{
-					"Key": "Value",
-					"Value": $('#txtStatsValue').val()
-				},
-				{
-					"Key": "Date",
-					"Value": $('#txtStatsDate').val()
-				},
-				{
-					"Key": "Time",
-					"Value": $('#txtStatsTime').val()
-				},
-				{
-					"Key": "Notes",
-					"Value": $('#txtStatsNotes').val()
-				}
-			],
-			"__SchemaType": "Statistics",
-			"__Attributes": [
-				{
-					"Key": "userId",
-					"Value": window.userId
-				},
-				{
-					"Key": "sessionkey",
-					"Value": Gossamer.authentication.getSessionId()
+					"key": "sessionkey",
+					"value": Gossamer.authentication.getSessionId()
 				}
 			]
 		}
 		
-		Gossamer.storage.articles.create(deploymentId, 'Statistics', article, function(article) {
+		Genesis.storage.articles.create(deploymentId, 'Statistics', article, function(article) {
 			var connection = {
-				"__ArticleAId": userId,
-				"__ArticleBId": article.__Id,
-				"__CreatedBy": "Strento",
-				"__LabelA": "User",
-				"__LabelB": "Statistics",
-				"__RelationName": "Statistics",
+				"__endpointa": {
+					"label":"user",
+					"articleid":userId
+				},
+				"__endpointb": {
+					"label":"statistics",
+					"articleid":article.__id
+				},
+				"__createdby": "Strento",
+				"__relationtype": "Statistics",
 			}
-			Gossamer.storage.connections.create(deploymentId, 'Statistics', connection, function(connection) {
+			Genesis.storage.connections.create(deploymentId, 'Statistics', connection, function(connection) {
 				btn.button('reset')
 				$('#addStatModal').modal('hide')
 				refreshUser()
@@ -594,33 +582,33 @@ $(function () {
 			
 			
 		var article = {
-			"__CreatedBy": "Strento",
-			"__SchemaType": "User"
+			"__createdby": "appacitive",
+			"__schematype": "Userschema"
 		}
 		
 		// load the billion properties
 		var p = []
-		p.push(kv("Name",$('#txtUserName').val()))
-		p.push(kv("Gender",$('[name=Gender]:checked').val()))
-		p.push(kv("DOB",$('#txtDOB').val()))
-		p.push(kv("Occupation",$('#txtOcc').val()))
-		p.push(kv("Blood_Group",$('#slctBloodGroup > option:selected').val()))
+		article["name"] = $('#txtUserName').val();
+		article["gender"] = $('[name=Gender]:checked').val();
+		article["dob"] = $('#txtDOB').val();
+		article["occupation"] = $('#txtOcc').val();
+		article["blood_group"] = $('#slctBloodGroup > option:selected').val();
 		
-		p.push(kv("Address",$('#txtAddress').val()))
-		p.push(kv("City",$('#txtCity').val()))
-		p.push(kv("Telephone_Number",$('#txtTelephoneNumber').val()))
-		p.push(kv("Mobile_Number",$('#txtMobileNumber').val()))
-		p.push(kv("Email_Id",$('#txtEmail').val()))
+		article["address"] = $('#txtAddress').val();
+		article["city"] = $('#txtCity').val();
+		article["telephone_number"] = $('#txtTelephoneNumber').val();
+		article["mobile_number"] = $('#txtMobileNumber').val();
+		article["email_id"] = $('#txtEmail').val();
 		
-		p.push(kv("Insurer",$('#txtInsurer').val()))
-		p.push(kv("Insurance_Id",$('#txtInsuranceId').val()))
-		p.push(kv("Insurance_Type",$('#slctInsuranceType > option:selected').val()))
-		p.push(kv("Eff_Date",$('#txtEffFrom').val()))
-		p.push(kv("Term_Date",$('#txtTermDate').val()))
+		article["insurer"] = $('#txtInsurer').val();
+		article["insurance_id"] = $('#txtInsuranceId').val();
+		article["insurance_type"] = $('#slctInsuranceType > option:selected').val();
+		article["eff_date"] = $('#txtEffFrom').val();
+		article["term_date"] = $('#txtTermDate').val();
 		
-		article.__Properties = p
-		
-		Gossamer.storage.articles.create(deploymentId, 'Userschema', article, function(article) {
+		console.dir(article)
+
+		Genesis.storage.articles.create(deploymentId, 'Userschema', article, function(article) {
 			$('#addUserModal').modal('hide')
 			btn.button('reset')
 		}, function() {
