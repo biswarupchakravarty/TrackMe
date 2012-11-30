@@ -192,27 +192,27 @@ var displayUser = function(id) {
 	var hbValues = [], hbDates = []
 	
 	this.Statistics.forEach(function(stat) {
-		if (!stat || !stat.Value || stat.Value.toString().trim().length == 0) return
-		if (!stat.Type) return
-		switch (stat.Type.toLowerCase()) {
+		if (!stat || !stat.value || stat.value.toString().trim().length == 0) return
+		if (!stat.type) return
+		switch (stat.type.toLowerCase()) {
 			case 'weight':
-				if (stat.Value > wtMax) wtMax = stat.Value
-				if (stat.Value < wtMin) wtMin = stat.Value
-				wtValues.push(parseFloat(stat.Value))
-				wtDates.push(stat.Date)
-				if (stat.Date < wtStart) wtStart = stat.Date;
+				if (stat.value > wtMax) wtMax = stat.value
+				if (stat.value < wtMin) wtMin = stat.value
+				wtValues.push(parseFloat(stat.value))
+				wtDates.push(stat.date)
+				if (stat.date < wtStart) wtStart = stat.date;
 				break
 			case 'blood_sugar':
-				if (stat.Value > bsMax) bsMax = stat.Value
-				if (stat.Value < bsMin) bsMin = stat.Value
-				bsValues.push(parseFloat(stat.Value))
-				bsDates.push(stat.Date)
-				if (stat.Date < bsStart) bsStart = stat.Date;
+				if (stat.value > bsMax) bsMax = stat.value
+				if (stat.value < bsMin) bsMin = stat.value
+				bsValues.push(parseFloat(stat.value))
+				bsDates.push(stat.date)
+				if (stat.date < bsStart) bsStart = stat.date;
 				break
 			case 'heart_rate':
-				hbValues.push(parseFloat(stat.Value));
-				hbDates.push(new Date(stat.Date));
-				if (new Date(stat.Date) < hbStart) hbStart = new Date(stat.Date);
+				hbValues.push(parseFloat(stat.value));
+				hbDates.push(new Date(stat.date));
+				if (new Date(stat.date) < hbStart) hbStart = new Date(stat.date);
 				break
 			default:
 				break
