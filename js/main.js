@@ -328,38 +328,28 @@ var displayUser = function(id) {
 		
 		btn.button('loading')
 		var article = {
-			"__CreatedBy": "Strento",
-			"__Properties": [
-				{
-					"Key": "Event_Type",
-					"Value": $('#slctEventType > option:selected').val()
-				},
-				{
-					"Key": "Event_Date",
-					"Value": $('#txtEventDate').val()
-				},
-				{
-					"Key": "Event_Time",
-					"Value": $('#txtEventTime').val()
-				},
-				{
-					"Key": "Note",
-					"Value": $('#txtEventNotes').val()
-				}
-			],
-			"__SchemaType": "Event"
+			"event_type": $('#slctEventType > option:selected').val(),
+			"event_date": $('#txtEventDate').val(),
+			"event_time": $('#txtEventTime').val(),
+			"note": $('#txtEventNotes').val(),
+			"__schematype": "event",
+			"__createdby": "appacitive",
 		}
 		
-		Gossamer.storage.articles.create(deploymentId, 'Event', article, function(article) {
+		Genesis.storage.articles.create(deploymentId, 'Event', article, function(article) {
 			var connection = {
-				"__ArticleAId": userId,
-				"__ArticleBId": article.__Id,
-				"__CreatedBy": "Strento",
-				"__LabelA": "User",
-				"__LabelB": "Event",
-				"__RelationName": "Event",
+				"__endpointa": {
+					"label":"user",
+					"articleid":userId
+				},
+				"__endpointb": {
+					"label":"event",
+					"articleid":article.__id
+				},
+				"__createdby": "Strento",
+				"__relationtype": "Event",
 			}
-			Gossamer.storage.connections.create(deploymentId, 'Event', connection, function(connection) {
+			Genesis.storage.connections.create(deploymentId, 'Event', connection, function(connection) {
 				btn.button('reset')
 				$('#addEventModal').modal('hide')
 				refreshUser()
