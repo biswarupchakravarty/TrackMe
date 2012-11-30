@@ -19,7 +19,7 @@ function UrlFactory() {
     };
     this.application = {
 
-        applicationServiceUrl: baseUrl + '/application.svc/v2/',
+        applicationServiceUrl: baseUrl + '/application.svc/',
 
         getSearchAllUrl: function (queryParams) {
             var url = String.format('{0}/find/{1}/all', this.applicationServiceUrl, Genesis.bag.accountName);
@@ -58,7 +58,7 @@ function UrlFactory() {
         }
     };
     this.article = {
-        articleServiceUrl: baseUrl + '/article.svc/v2/',
+        articleServiceUrl: baseUrl + '/article.svc/',
 
         getExportUrl: function (id, type) {
             return 'Articles.exp?ctype=Article&blueprintid=' + id + '&type=' + type;
@@ -80,7 +80,7 @@ function UrlFactory() {
             return String.format('{0}/blob/update?deploymentid={1}', this.articleServiceUrl, this.getEntityId());
         },
         getGraphQueryUrl: function(deploymentId) {
-            return String.format('{0}/Search.svc/{1}/project', baseUrl, deploymentId);
+            return String.format('{0}/Search.svc/project', baseUrl, deploymentId);
         },
 
         getSearchAllUrl: function (deploymentId, schemaId, queryParams) {

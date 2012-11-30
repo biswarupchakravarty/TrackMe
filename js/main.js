@@ -416,7 +416,7 @@ $(function () {
 	$('button.alert-close').live('click',function() {
 		var alertIndex = $(this).data().alertindex
 		var alertUI = $(this).parent()
-		Gossamer.storage.articles.get('healthfinal','user',window.userId,function(article) {
+		Gossamer.storage.articles.get('healthfinal','userschema',window.userId,function(article) {
 			if (!article.__Attributes || article.__Attributes.length == 0) return
 			var attr = article.__Attributes.filter(function(attr) {
 				return attr.Key.toLowerCase() == 'alerts'
@@ -443,7 +443,7 @@ $(function () {
 			}
 			var logger = function() {console.dir(arguments)}
 			
-			Gossamer.storage.articles.update('healthfinal','user',window.userId,updateCommand,function() {
+			Gossamer.storage.articles.update('healthfinal','userschema',window.userId,updateCommand,function() {
 				alertUI.slideUp()
 			},logger)
 		})
@@ -519,7 +519,7 @@ $(function () {
 		var attachRefreshScript = function(userId) {
 			window.refreshHandles.push(setInterval(function() {
 				refreshAlerts(userId)
-			}, 5000))
+			}, 300000))
 		}
 		
 		
@@ -620,7 +620,7 @@ $(function () {
 		
 		article.__Properties = p
 		
-		Gossamer.storage.articles.create(deploymentId, 'User', article, function(article) {
+		Gossamer.storage.articles.create(deploymentId, 'Userschema', article, function(article) {
 			$('#addUserModal').modal('hide')
 			btn.button('reset')
 		}, function() {
@@ -810,15 +810,15 @@ var generateTimeline = function(timeline) {
 	timeline.forEach(function(event) {
 		event.dump = ''
 		
-		event.displayHeader = event.Event_Type.replace(/_/g,' ');
+		event.displayHeader = event.event_type.replace(/_/g,' ');
 		
-		var d = new Date(event.Event_Date);
+		var d = new Date(event.event_date);
 		event.displayDate = d.getDate() + ' ' + ['January','February','March','April','May','June','July','August','September','October','November','December'][d.getMonth()] + ' ' + d.getFullYear()
 		
-		if (event.Event_Report && event.Event_Report.length > 0)
-			event.image = event.Event_Report + '?session=' + Gossamer.authentication.getSessionId();
+		if (event.event_report && event.event_report.length > 0)
+			event.image = event.event_report + '?session=' + Gossamer.authentication.getSessionId();
 		
-		event.timelineDate = event.Event_Date.toDateString()
+		event.timelineDate = event.event_date.toDateString()
 		for (var x in event) {
 			if (x != 'timelineDate' && x != 'dump')
 				event.dump += '<b>' + x.replace(/_/g,' ') + '</b><br/>' + event[x] + '<br/><br/>'

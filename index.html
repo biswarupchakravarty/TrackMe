@@ -277,38 +277,38 @@
 							<img src="{{#Photograph}}{{Photograph}}{{/Photograph}}{{^Photograph}}img/empty-profile-male.png{{/Photograph}}" width="64" />
 						</div>
 						<div style="margin-left: 10px; display:inline-block; vertical-align: bottom;">
-							<span style="font-weight: bold; font-size: 18pt;">{{Name}}</span>
-							<span style="margin-left: 10px; color: gray; font-size: 12pt;">{{Age}} years old</span>
+							<span style="font-weight: bold; font-size: 18pt;">{{name}}</span>
+							<span style="margin-left: 10px; color: gray; font-size: 12pt;">{{age}} years old</span>
 						</div>
 					</div>
 				</div>
 				<div class="book-middle">
 					<div id="divDetails" class="invis" style="margin-left: 145px; padding-top: 20px;">
-						<div class="">{{Name}}, {{Age}} year old {{Gender}} {{Occupation}}
-							<br/>{{Address}}
-							<br/>{{#City}}{{City}}{{/City}}</div>
+						<div class="">{{name}}, {{age}} year old {{gender}} {{occupation}}
+							<br/>{{address}}
+							<br/>{{#city}}{{city}}{{/city}}</div>
 						<br/>
 						<hr/>
 						<div class="">
-							<i class="icon-envelope"></i>{{#Telephone_Number}}Telephone: {{Telephone_Number}}{{/Telephone_Number}}
-							<br/>{{#Mobile_Number}}Mobile: {{Mobile_Number}}{{/Mobile_Number}}
-							<br/>{{#Email_Id}}Email: {{Email_Id}}{{/Email_Id}}
+							<i class="icon-envelope"></i>{{#telephone_number}}Telephone: {{telephone_number}}{{/telephone_number}}
+							<br/>{{#mobile_number}}Mobile: {{mobile_number}}{{/mobile_number}}
+							<br/>{{#email_id}}Email: {{email_id}}{{/email_id}}
 							<br/>
 						</div>
 						<hr/>
 						<div class="">
 							<i class="icon-bell"></i>
 							<strong>Emergency contact</strong>
-							<br/>{{Name_of_kin}}
-							<br/>{{Address_of_kin}}
-							<br/>Telephone: {{Mobile_Number_of_kin}}</div>
+							<br/>{{name_of_kin}}
+							<br/>{{address_of_kin}}
+							<br/>Telephone: {{mobile_number_of_kin}}</div>
 						<hr/>
 						<div class="">
 							<i class="icon-list-alt"></i>
 							<strong>Insurance</strong>
-							<br/>Insurer: {{Insurer}}
-							<br/>Insurance Type: {{Insurance_Type}}, Insurance Id: {{Insurance_Id}}
-							<br/>Validity: {{Eff_Date}} to {{Term_Date}}</div>
+							<br/>Insurer: {{insurer}}
+							<br/>Insurance Type: {{insurance_type}}, Insurance Id: {{insurance_id}}
+							<br/>Validity: {{eff_date}} to {{term_date}}</div>
 					</div>
 					<div id="divTimeline" style="margin-left: 145px; padding-top: 20px;" class="invis">
 						<h4>Patient Medical Timeline</h4>
@@ -357,7 +357,7 @@
 									</span>
 								</div>
 								<div class="timeline-item-content">
-									<small>{{Note}}</small>
+									<small>{{note}}</small>
 									<br/>{{#image}}
 									<a target="_blank" href="{{image}}"><img src="{{image}}" class="img-polaroid" height="140" width="280" /></a>{{/image}}</div>
 							</div>{{/timeline}}</div>
